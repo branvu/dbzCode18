@@ -13,19 +13,22 @@ import java.util.HashMap;
 
 public class DbzHardwareMap {
     final private static String TAG = DbzHardwareMap.class.getName();
-    private final HardwareMap hardwareMap;
+
+    private static HardwareMap hardwareMap;
+
+    static {
+        hardwareMap = DbzOpMode.getInstanceHardwareMap();
+    }
+
     /**
      * A map that maps the name of a device to the actual Dbz hardware device
      * When one of the get methods is called, we check this map to see if the Dbz device has already been created
      * If it has, we just return that object instead of making a new one
      */
-    HashMap<String, HardwareDevice> createdDevices = new HashMap<>();
+    private static HashMap<String, HardwareDevice> createdDevices = new HashMap<>();
 
-    DbzHardwareMap(HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-    }
 
-    DbzMotor getDbzMotor(String name) {
+    static DbzMotor getDbzMotor(String name) {
         // if we've already created this DbzMotor, just return that DbzMotor
         if (createdDevices.containsKey(name)) {
             if (createdDevices.get(name) instanceof DbzMotor)
@@ -38,7 +41,7 @@ public class DbzHardwareMap {
         // we can only make a DbzMotor if we got an DcMotorEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
         if (base instanceof DcMotorEx) {
-            DbzMotor dbzMotor = new DbzMotorImpl((DcMotorEx) base);
+            DbzMotor dbzMotor = new DbzMotor((DcMotorEx) base);
             createdDevices.put(name, dbzMotor);
             return dbzMotor;
         } else {

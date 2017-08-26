@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.extension;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -11,8 +12,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class DbzOpMode extends LinearOpMode {
     final private static String TAG = DbzOpMode.class.getName();
+
+    private static DbzOpMode instance = null;
+
+    DbzOpMode() {
+        instance = this;
+    }
+
     protected ElapsedTime runtime = new ElapsedTime();
-    protected DbzHardwareMap dbzHardwareMap = new DbzHardwareMap(hardwareMap);
 
 
     //TODO: this is an example motor
@@ -21,7 +28,7 @@ public abstract class DbzOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
         /* Initialize stuff here from the dbzHardwareMap */
-        leftMotor = dbzHardwareMap.getDbzMotor("leftMotor");
+        leftMotor = DbzHardwareMap.getDbzMotor("leftMotor");
 
         /* Run our init code and say we are initialized */
         dbzInit();
@@ -39,6 +46,14 @@ public abstract class DbzOpMode extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
+    }
+
+    static HardwareMap getInstanceHardwareMap() {
+        if (instance == null) {
+            Log.e(TAG, "getInstanceHardwareMap called before instantiation of DbzOpMode");
+            return null;
+        }
+        return instance.hardwareMap;
     }
 
 
