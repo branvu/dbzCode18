@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matthew on 8/25/2017.
@@ -17,10 +21,280 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     final private static String TAG = DbzMotor.class.getName();
     private final DcMotorEx dcMotorEx;
 
+    /**
+     * This is true whenever a limit switch is pressed, and prevents other methods from changing the power
+     */
+    private boolean limitLockOut = false;
+
+    /**
+     * This is the default angle unit to use with getVelocity and setVelocity
+     */
+    private AngleUnit defaultAngleUnit = AngleUnit.DEGREES;
+
+    /**
+     * This is a list containing all the Limiter objects for this motor
+     * you can only have 2 limit switches on any given motor
+     */
+    private List<Limiter> limiterList = new ArrayList<Limiter>();
+
     DbzMotor(DcMotorEx dcMotorEx) {
         this.dcMotorEx = dcMotorEx;
         if (dcMotorEx instanceof DbzMotor)
             Log.w(TAG, "Someone just made a DbzMotor wrapper around another DbzMotor; this is probably not intended");
+    }
+
+
+    /** Limit switch handling - enabling and using the functionality **/
+    /**
+     * Assign a limit switch to this motor.  This can be called up to two times
+     *
+     * @param limitSwitch the LimitSwitch object that is limiting this motor
+     */
+    public void addLimitSwitch(LimitSwitch limitSwitch) {
+        if (limiterList.size() >= 2) {
+            Log.w(TAG, "You can't assign more than two limit switches to a DbzMotor");
+            return;
+        }
+
+        limiterList.add(new Limiter(limitSwitch));
+    }
+
+    /**
+     * Instruct both limit switches to, when pressed:
+     * (1) Reverse motor direction & lock out other attempts to change the motor speed/direction
+     * (2) Wait to be unpressed
+     * (3) Stop the motor & end the lock out
+     */
+    public void startLimiting() {
+        for (Limiter limiter : limiterList) {
+            limiter.startListening();
+        }
+    }
+
+    /**
+     * Instruct both limit switches to end the behavior started in startLimiting()
+     */
+    public void stopLimiting() {
+        for (Limiter limiter : limiterList) {
+            limiter.stopListening();
+        }
+    }
+
+    /**
+     * Put out a standing order to each limit switch, to stop the motor as soon as one is pressed
+     * Works for one press.
+     */
+    public void breakOnLimit() {
+        for (Limiter limiter : limiterList) {
+            limiter.breakOnPress();
+        }
+    }
+
+    /**
+     * Cancel the standing order to stop the motor as soon as something hits one of the limit switches
+     * Note that each limit switch does this independently.  If you call breakOnLimit, you MUST
+     * also call cancelBreakOnLimit.  Otherwise, undefined behavior may occur.  breakOnLimit gives
+     * up to two seperate standing orders to two different limit switches.  When one switch triggers,
+     * this ends one order.  However, it does not end the order on the OTHER limit switch.
+     * <p>
+     * These methods are intended to be used in teleop.  For example, on button A press, a gear rack
+     * is moved in with breakOnLimit().  On button A release, cancelBreakOnLimit() is sent.
+     */
+    public void cancelBreakOnLimit() {
+        for (Limiter limiter : limiterList) {
+            limiter.cancelBreakOnPress();
+        }
+    }
+
+    private class Limiter {
+        final private LimitSwitch limitSwitch;
+        final int millisWaitDuration = 100;
+        private Thread listenerThread;
+        private Thread breakThread;
+
+        Limiter(final LimitSwitch limitSwitch) {
+            this.limitSwitch = limitSwitch;
+        }
+
+        /**
+         * Start the thread that stops the motor if a limit switch is hit
+         */
+        public void startListening() {
+            listenerThread = new Thread(new ListeningRunnable());
+            listenerThread.start();
+        }
+
+        /**
+         * Stop the thread that stops the motor if a limit switch is hit
+         */
+        public void stopListening() {
+            if (listenerThread == null) {
+                Log.w(TAG, "Trying to shut down a listener thread that has not yet started");
+                return;
+            }
+            listenerThread.interrupt();
+        }
+
+        /**
+         * Wait for the limit switch to be pressed and stop the motor at that point
+         * Checks for the limit switch's state every millisWaitDuration
+         */
+        public void breakOnPress() {
+            breakThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (!(!limitSwitch.isLimiting() || Thread.interrupted()))
+                            Thread.sleep(millisWaitDuration);
+                    } catch (InterruptedException e) {
+                        Log.v(TAG, "Thread shut down while waiting for limit switch press; stopping motor");
+                        e.printStackTrace();
+                    }
+                    setPower(0);
+                }
+            });
+            breakThread.start();
+        }
+
+        public void cancelBreakOnPress() {
+            if (breakThread == null)
+                return;
+            breakThread.interrupt();
+        }
+
+        /**
+         * This class provides a Runnable that checks to see if the limit switch is pressed
+         * if it is, it will reverse the motor and stop the motor after the limit is no longer pressed
+         */
+        private class ListeningRunnable implements Runnable {
+            ListeningRunnable() {
+            }
+
+            @Override
+            public void run() {
+                Log.v(TAG, "Starting limit switch listening thread");
+                //if we aren't shut down, keep checking for a limiting condition every 0.1s
+                while (!Thread.interrupted()) {
+                    try {
+                        //if we are limited, then reverse the motor direction
+                        //otherwise wait 0.1s
+                        if (limitSwitch.isLimiting()) {
+                            Log.v(TAG, "Limit switch activated");
+
+                            //if another limit switch is active, something is wrong.  Stop everything
+                            if (isLimitLockOut()) {
+                                dcMotorEx.setMotorDisable();
+                                Log.e(TAG, "Multiple limit switches pressed at the same time?");
+                                throw new RuntimeException("Multiple active limit switches on one motor?");
+                            }
+
+                            //Let's start going the other way and stop anyone else from interfering
+                            reverseMotorDirection();
+                            setLimitLockOut(true);
+
+                            //wait for the limit switch to be un-pressed
+                            while (limitSwitch.isLimiting())
+                                Thread.sleep(10);
+
+                            //we are good to move on.  stop the motor and allow others to access
+                            dcMotorEx.setPower(0);
+                            setLimitLockOut(false);
+                            Log.v(TAG, "Limit switch deactivated");
+                        } else {
+                            Thread.sleep(millisWaitDuration);
+                        }
+                    } catch (InterruptedException e) {
+                        Log.v(TAG, "Limit switch listener thread killed while sleeping");
+                        e.printStackTrace();
+                    }
+                }
+                Log.v(TAG, "Ending limit switch listening thread");
+
+            }
+
+            private void reverseMotorDirection() {
+                if (dcMotorEx.getDirection() == Direction.FORWARD)
+                    dcMotorEx.setDirection(Direction.REVERSE);
+                else
+                    dcMotorEx.setDirection(Direction.FORWARD);
+            }
+        }
+    }
+
+
+    /** Limit switch lockout logic.  If the limit switch is pressed, keep everyone else out **/
+    /**
+     * @param limitLockOut
+     */
+    private synchronized void setLimitLockOut(boolean limitLockOut) {
+        this.limitLockOut = limitLockOut;
+    }
+
+    private synchronized boolean isLimitLockOut() {
+        return limitLockOut;
+    }
+
+    private boolean checkLimitLockOut() {
+        if (isLimitLockOut()) {
+            Log.d(TAG, "Cannot set motor power while locked out by limit switch");
+            return true;
+        } else
+            return false;
+    }
+
+    public void setVelocity(double angularRate, AngleUnit unit) {
+        if (checkLimitLockOut())
+            return;
+        dcMotorEx.setVelocity(angularRate, unit);
+    }
+
+    public void setPower(double power) {
+        if (checkLimitLockOut())
+            return;
+        dcMotorEx.setPower(power);
+    }
+
+    public void setDirection(Direction direction) {
+        if (checkLimitLockOut())
+            return;
+        dcMotorEx.setDirection(direction);
+    }
+
+
+    /** Allow a default AngleUnit to be set for get and set velocity **/
+    /**
+     * Retrieves the current AngleUnit used if none is specified for use with getVelocity and setVelocity
+     *
+     * @return the AngleUnit used by default
+     */
+    public AngleUnit getDefaultAngleUnit() {
+        return defaultAngleUnit;
+    }
+
+    public void setDefaultAngleUnit(AngleUnit defaultAngleUnit) {
+        this.defaultAngleUnit = defaultAngleUnit;
+    }
+
+    public double getVelocity() {
+        return getVelocity(defaultAngleUnit);
+    }
+
+    public void setVelocity(double angularRate) {
+        setVelocity(angularRate, defaultAngleUnit);
+    }
+
+
+    /** Delegate all other methods of DcMotorEx **/
+    /**
+     * @param unit
+     * @return
+     */
+    public double getVelocity(AngleUnit unit) {
+        return dcMotorEx.getVelocity(unit);
+    }
+
+    public double getPower() {
+        return dcMotorEx.getPower();
     }
 
     public Manufacturer getManufacturer() {
@@ -59,24 +333,12 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
         return dcMotorEx.getController();
     }
 
-    public void setDirection(Direction direction) {
-        dcMotorEx.setDirection(direction);
-    }
-
     public Direction getDirection() {
         return dcMotorEx.getDirection();
     }
 
     public int getPortNumber() {
         return dcMotorEx.getPortNumber();
-    }
-
-    public void setPower(double power) {
-        dcMotorEx.setPower(power);
-    }
-
-    public double getPower() {
-        return dcMotorEx.getPower();
     }
 
     public boolean isBusy() {
@@ -131,14 +393,6 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
 
     public boolean isMotorEnabled() {
         return dcMotorEx.isMotorEnabled();
-    }
-
-    public void setVelocity(double angularRate, AngleUnit unit) {
-        dcMotorEx.setVelocity(angularRate, unit);
-    }
-
-    public double getVelocity(AngleUnit unit) {
-        return dcMotorEx.getVelocity(unit);
     }
 
     public void setPIDCoefficients(RunMode mode, PIDCoefficients pidCoefficients) {

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
+
 /**
  * Created by Matthew on 8/25/2017.
  */
@@ -25,12 +27,19 @@ public abstract class DbzOpMode extends LinearOpMode {
     //TODO: this is an example motor
     protected DbzMotor leftMotor;
     protected DbzServo camServo;
+    protected DbzMotor limitedMotor;
+    protected LimitSwitch limiter1, limiter2;
+
 
     @Override
     public void runOpMode() {
         /* Initialize stuff here from the dbzHardwareMap */
         leftMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.left);
         camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
+        limitedMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.limited);
+        limiter1 = new LimitSwitch(DbzHardwareMap.getDbzDigitalChannel(DbzHardwareMap.DbzDigitalChannelNames.limiter1));
+        limiter2 = new LimitSwitch(DbzHardwareMap.getDbzDigitalChannel(DbzHardwareMap.DbzDigitalChannelNames.limiter2));
+
 
 
         /* Run our init code and say we are initialized */
@@ -49,6 +58,7 @@ public abstract class DbzOpMode extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
+        dbzTeardown();
     }
 
     static HardwareMap getInstanceHardwareMap() {
@@ -65,4 +75,6 @@ public abstract class DbzOpMode extends LinearOpMode {
     protected abstract void dbzLoop();
 
     protected abstract void dbzLoopHook();
+
+    protected abstract void dbzTeardown();
 }

@@ -12,9 +12,12 @@ import org.firstinspires.ftc.teamcode.extension.DbzOpMode;
 public class TeleOpMode extends DbzOpMode {
     final private static String TAG = TeleOpMode.class.getName();
 
+
     @Override
     protected void dbzInit() {
-        //maybe reset some motor encoders?  talk to some sensors?
+        limitedMotor.addLimitSwitch(limiter1);
+        limitedMotor.addLimitSwitch(limiter2);
+        limitedMotor.startLimiting();
     }
 
     @Override
@@ -26,5 +29,10 @@ public class TeleOpMode extends DbzOpMode {
     @Override
     protected void dbzLoop() {
         Chassis.drive(gamepad1.left_stick_y);
+    }
+
+    @Override
+    protected void dbzTeardown() {
+        limitedMotor.stopLimiting();
     }
 }

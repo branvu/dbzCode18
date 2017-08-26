@@ -71,18 +71,25 @@ public class DbzHardwareMap {
         }
     }
 
-    //maybe consider a method like
-    // Chassis getChassis() {
-    //     return new Chassis(getDbzMotor("left"), getDbzMotor("right);
-    // }
-    //or something kinda like that
+    public static DbzDigitalChannel getDbzDigitalChannel(DbzDigitalChannelNames digitalChannel) {
+        // if we've already created this DbzDigitalChannel, just return that one
+        if (createdDevices.containsKey(digitalChannel)) {
+            if (createdDevices.get(digitalChannel) instanceof DbzDigitalChannel)
+                return (DbzDigitalChannel) createdDevices.get(digitalChannel);
+        }
+
+        DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel(hardwareMap.digitalChannel.get(digitalChannel.name));
+        createdDevices.put(digitalChannel, dbzDigitalChannel);
+        return dbzDigitalChannel;
+    }
+
 
     public static HashMap<DbzDeviceNames, DbzDevice> getCreatedDevices() {
         return createdDevices;
     }
 
     public enum DbzMotorNames implements DbzDeviceNames {
-        left("LeftMotor");
+        left("LeftMotor"), limited("limitedmotor");
 
         String name;
 
@@ -97,6 +104,16 @@ public class DbzHardwareMap {
         String name;
 
         DbzServoNames(String name) {
+            this.name = name;
+        }
+    }
+
+    public enum DbzDigitalChannelNames implements DbzDeviceNames {
+        limiter1("limit1"), limiter2("limit2");
+
+        String name;
+
+        DbzDigitalChannelNames(String name) {
             this.name = name;
         }
     }
