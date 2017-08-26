@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 public abstract class DbzOpMode extends LinearOpMode {
-    final static String TAG = DbzOpMode.class.getName();
+    final private static String TAG = DbzOpMode.class.getName();
     protected ElapsedTime runtime = new ElapsedTime();
-    public DbzHardwareMap dbzHardwareMap = new DbzHardwareMap(hardwareMap);
+    protected DbzHardwareMap dbzHardwareMap = new DbzHardwareMap(hardwareMap);
 
 
     //TODO: this is an example motor

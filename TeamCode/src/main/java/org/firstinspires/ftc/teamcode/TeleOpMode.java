@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.extension.DbzOpMode;
 
 @TeleOp(name = "MainTeleOp", group = "TeleOp")
 public class TeleOpMode extends DbzOpMode {
+    final private static String TAG = TeleOpMode.class.getName();
 
     @Override
     protected void dbzInit() {
