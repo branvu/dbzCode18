@@ -15,7 +15,7 @@ public abstract class DbzOpMode extends LinearOpMode {
 
     private static DbzOpMode instance = null;
 
-    DbzOpMode() {
+    public DbzOpMode() {
         instance = this;
     }
 
@@ -24,11 +24,14 @@ public abstract class DbzOpMode extends LinearOpMode {
 
     //TODO: this is an example motor
     protected DbzMotor leftMotor;
+    protected DbzServo camServo;
 
     @Override
     public void runOpMode() {
         /* Initialize stuff here from the dbzHardwareMap */
-        leftMotor = DbzHardwareMap.getDbzMotor("leftMotor");
+        leftMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.left);
+        camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
+
 
         /* Run our init code and say we are initialized */
         dbzInit();

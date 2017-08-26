@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Created by Matthew on 8/25/2017.
  */
 
-public class DbzMotor implements DcMotorEx {
+public class DbzMotor implements DcMotorEx, DbzDevice {
     final private static String TAG = DbzMotor.class.getName();
     private final DcMotorEx dcMotorEx;
 
