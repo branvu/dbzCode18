@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.extension;
 
-import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -8,6 +7,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.LogDbz;
 import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
 
 import java.util.ArrayList;
@@ -37,10 +37,11 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
      */
     private List<Limiter> limiterList = new ArrayList<Limiter>();
 
-    DbzMotor(DcMotorEx dcMotorEx) {
+    public DbzMotor(DcMotorEx dcMotorEx) {
         this.dcMotorEx = dcMotorEx;
+
         if (dcMotorEx instanceof DbzMotor)
-            Log.w(TAG, "Someone just made a DbzMotor wrapper around another DbzMotor; this is probably not intended");
+            LogDbz.w(TAG, "Someone just made a DbzMotor wrapper around another DbzMotor; this is probably not intended");
     }
 
 
@@ -52,7 +53,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
      */
     public void addLimitSwitch(LimitSwitch limitSwitch) {
         if (limiterList.size() >= 2) {
-            Log.w(TAG, "You can't assign more than two limit switches to a DbzMotor");
+            LogDbz.w(TAG, "You can't assign more than two limit switches to a DbzMotor");
             return;
         }
 
@@ -129,7 +130,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
          */
         public void stopListening() {
             if (listenerThread == null) {
-                Log.w(TAG, "Trying to shut down a listener thread that has not yet started");
+                LogDbz.w(TAG, "Trying to shut down a listener thread that has not yet started");
                 return;
             }
             listenerThread.interrupt();
@@ -148,7 +149,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                         while (!(!limitSwitch.isLimiting() || Thread.interrupted()))
                             Thread.sleep(millisWaitDuration);
                     } catch (InterruptedException e) {
-                        Log.v(TAG, "Thread shut down while waiting for limit switch press; stopping motor");
+                        LogDbz.v(TAG, "Thread shut down while waiting for limit switch press; stopping motor");
                         e.printStackTrace();
                     }
                     setPower(0);
@@ -174,21 +175,21 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
 
             @Override
             public void run() {
-                Log.v(TAG, "Starting limit switch listening thread");
+                LogDbz.v(TAG, "Starting limit switch listening thread");
                 //if we aren't shut down, keep checking for a limiting condition every millisWaitDuration
                 while (!Thread.interrupted()) {
                     try {
                         //if we are limited, then reverse the motor direction
                         //otherwise wait 0.1s
                         if (limitSwitch.isLimiting()) {
-                            Log.v(TAG, "Limit switch activated");
+                            LogDbz.v(TAG, "Limit switch activated");
 
                             //if another limit switch is active, something is wrong.  Stop everything
                             //Since we didn't setLimitLockout to true, the other one should NOT be true,
                             //no limit switches should be true as lockout at this point
                             if (isLimitLockOut()) {
                                 dcMotorEx.setMotorDisable();
-                                Log.e(TAG, "Multiple limit switches pressed at the same time?");
+                                //LogDbz.e(TAG, "Multiple limit switches pressed at the same time?");
                                 throw new RuntimeException("Multiple active limit switches on one motor?");
                             }
 
@@ -203,16 +204,16 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                             //we are good to move on.  stop the motor and allow others to access
                             dcMotorEx.setPower(0);
                             setLimitLockOut(false);
-                            Log.v(TAG, "Limit switch deactivated");
+                            LogDbz.v(TAG, "Limit switch deactivated");
                         } else {
                             Thread.sleep(millisWaitDuration);
                         }
                     } catch (InterruptedException e) {
-                        Log.v(TAG, "Limit switch listener thread killed while sleeping");
+                        LogDbz.v(TAG, "Limit switch listener thread killed while sleeping");
                         e.printStackTrace();
                     }
                 }
-                Log.v(TAG, "Ending limit switch listening thread");
+                LogDbz.v(TAG, "Ending limit switch listening thread");
 
             }
 
@@ -240,7 +241,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
 
     private boolean checkLimitLockOut() {
         if (isLimitLockOut()) {
-            Log.d(TAG, "Cannot set motor power while locked out by limit switch");
+            LogDbz.d(TAG, "Cannot set motor power while locked out by limit switch");
             return true;
         } else
             return false;
@@ -359,7 +360,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
 
     @Deprecated
     public void setPowerFloat() {
-        Log.w(TAG, "Call made to setPowerFloat, a deprecated method");
+        LogDbz.w(TAG, "Call made to setPowerFloat, a deprecated method");
         dcMotorEx.setPowerFloat();
     }
 
