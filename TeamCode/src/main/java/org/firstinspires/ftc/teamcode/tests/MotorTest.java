@@ -22,12 +22,18 @@ import static org.mockito.Mockito.when;
 public class MotorTest {
     @Spy
     FakeDcMotorEx dcMotorEx;
+    DbzMotor motor;
     @Mock LimitSwitch limitSwitch;
+    
+    @Before
+    public void initMotor(){
+        motor = new DbzMotor(dcMotorEx);
+    }
     @Test
     public void readMotorLimit(){
         //motor.addLimitSwitch(limitSwitch);
 
-        DbzMotor motor = new DbzMotor(dcMotorEx);
+
 
 
         motor.addLimitSwitch(limitSwitch);
