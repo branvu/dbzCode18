@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.extension.DbzMotor;
+import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDcMotorEx;
 import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,26 +22,7 @@ import static org.mockito.Mockito.when;
 public class MotorTest {
     @Spy
     FakeDcMotorEx dcMotorEx;
-
-    @Mock
-    DbzMotor motor;
-
-    @Mock
-    LimitSwitch limitSwitch;
-
-    @Before
-    public void addAndStartLimit(){
-        motor.addLimitSwitch(limitSwitch);
-        motor.startLimiting();
-        System.out.println("Did stuff");
-    }
-
-    @Test
-    public void readMotorPosition(){
-        when(motor.getCurrentPosition())
-                .thenReturn(5);
-        assertEquals(5,motor.getCurrentPosition());
-    }
+    @Mock LimitSwitch limitSwitch;
     @Test
     public void readMotorLimit(){
         //motor.addLimitSwitch(limitSwitch);
@@ -66,7 +48,7 @@ public class MotorTest {
 
         sleep(100);
 
-        assertEquals(0d, motor.getPower());
+        assertEquals(0d, motor.getPower());//assertEquals(Expected,Actual)
         motor.stopLimiting();
     }
 
@@ -78,29 +60,6 @@ public class MotorTest {
         }
     }
 
-    public static abstract class FakeDcMotorEx implements DcMotorEx {
-        double power = 0;
-        Direction direction = Direction.FORWARD;
 
-        @Override
-        public void setDirection(Direction direction) {
-            this.direction = direction;
-        }
-
-        @Override
-        public Direction getDirection() {
-            return direction;
-        }
-
-        @Override
-        public double getPower() {
-            return power;
-        }
-
-        @Override
-        public void setPower(double power) {
-            this.power = power;
-        }
-    }
 
 }

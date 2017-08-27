@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.ServoController;
 public class DbzServo implements Servo, PwmControl, DbzDevice {
     final private static String TAG = DbzServo.class.getName();
 
-    interface ServoEx extends Servo, PwmControl {
+    public interface ServoEx extends Servo, PwmControl {
     }
 
     private final ServoEx servoEx;
