@@ -144,6 +144,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                 @Override
                 public void run() {
                     try {
+                        //While limit switch is limiting, wait
                         while (!(!limitSwitch.isLimiting() || Thread.interrupted()))
                             Thread.sleep(millisWaitDuration);
                     } catch (InterruptedException e) {
@@ -157,6 +158,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
         }
 
         public void cancelBreakOnPress() {
+            //If breakThread is not started, there is nothing to cancel
             if (breakThread == null)
                 return;
             breakThread.interrupt();
@@ -182,6 +184,8 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                             Log.v(TAG, "Limit switch activated");
 
                             //if another limit switch is active, something is wrong.  Stop everything
+                            //Since we didn't setLimitLockout to true, the other one should NOT be true,
+                            //no limit switches should be true as lockout at this point
                             if (isLimitLockOut()) {
                                 dcMotorEx.setMotorDisable();
                                 Log.e(TAG, "Multiple limit switches pressed at the same time?");
