@@ -96,7 +96,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
      * also call cancelBreakOnLimit.  Otherwise, undefined behavior may occur.  breakOnLimit gives
      * up to two seperate standing orders to two different limit switches.  When one switch triggers,
      * this ends one order.  However, it does not end the order on the OTHER limit switch.
-     * <p>
+     *
      * These methods are intended to be used in teleop.  For example, on button A press, a gear rack
      * is moved in with breakOnLimit().  On button A release, cancelBreakOnLimit() is sent.
      */
@@ -175,7 +175,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
             @Override
             public void run() {
                 Log.v(TAG, "Starting limit switch listening thread");
-                //if we aren't shut down, keep checking for a limiting condition every 0.1s
+                //if we aren't shut down, keep checking for a limiting condition every millisWaitDuration
                 while (!Thread.interrupted()) {
                     try {
                         //if we are limited, then reverse the motor direction
@@ -193,8 +193,8 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                             }
 
                             //Let's start going the other way and stop anyone else from interfering
-                            reverseMotorDirection();
                             setLimitLockOut(true);
+                            reverseMotorDirection();
 
                             //wait for the limit switch to be un-pressed
                             while (limitSwitch.isLimiting())
