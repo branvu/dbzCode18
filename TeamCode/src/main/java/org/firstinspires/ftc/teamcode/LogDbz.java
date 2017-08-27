@@ -31,4 +31,22 @@ public class LogDbz {
         else
             System.out.println(TAG + "/d: " + msg);
     }
+    public static void e(String TAG, String msg) {
+        if (useAndroid)
+            Log.e(TAG, msg);
+        else
+            System.out.println(TAG + "/e: " + msg);
+    }
+    public static void i(String TAG, String msg){
+        if(useAndroid)
+            Log.i(TAG,msg);
+        else
+            System.out.println(TAG + "/i:" + msg);
+    }
+    public static void wtf(String TAG, String msg){
+        if(useAndroid)
+            Log.wtf(TAG,msg);
+        else
+            System.out.println(TAG + "/wtf:" + msg);
+    }
 }
