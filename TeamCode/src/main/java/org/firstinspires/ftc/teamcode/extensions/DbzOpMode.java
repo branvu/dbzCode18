@@ -29,6 +29,7 @@ public abstract class DbzOpMode extends LinearOpMode {
     protected DbzServo camServo;
     protected DbzMotor limitedMotor;
     protected LimitSwitch limiter1, limiter2;
+    protected DbzIMU imu;
 
 
     @Override
@@ -39,7 +40,7 @@ public abstract class DbzOpMode extends LinearOpMode {
         limitedMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.limited);
         limiter1 = new LimitSwitch(DbzHardwareMap.getDbzDigitalChannel(DbzHardwareMap.DbzDigitalChannelNames.limiter1));
         limiter2 = new LimitSwitch(DbzHardwareMap.getDbzDigitalChannel(DbzHardwareMap.DbzDigitalChannelNames.limiter2));
-
+        imu = new DbzIMU(DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.imu));
 
 
         /* Run our init code and say we are initialized */
