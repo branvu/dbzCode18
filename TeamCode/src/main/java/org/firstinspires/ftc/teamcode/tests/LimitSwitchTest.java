@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.tests;
 
 import org.firstinspires.ftc.teamcode.extension.DbzDigitalChannel;
 import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDigitalChannel;
+import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
 import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -17,19 +17,32 @@ import static junit.framework.Assert.assertEquals;
  */
 @RunWith(MockitoJUnitRunner.class)
 
-public class LimitSwitchTest {
+public class LimitSwitchTest extends DbzUnitTester<LimitSwitch> {
     @Spy
     FakeDigitalChannel digitalChannel;
 
-    LimitSwitch limitSwitch;
+    private LimitSwitch limitSwitch;
+
     @Before
-    public void InitLimiter(){
+    public void initLimitSwitch() {
         DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel(digitalChannel);
-         limitSwitch = new LimitSwitch(dbzDigitalChannel);
+        limitSwitch = new LimitSwitch(dbzDigitalChannel);
     }
+
+    @Override
+    public void testGettersSetters() {
+        testAllGettersAndSetters(LimitSwitch.class, null);
+    }
+
+    @Override
+    protected LimitSwitch getInstance() {
+        return limitSwitch;
+    }
+
+
     @Test
-    public void testLimitLimiting(){
-        digitalChannel.setState(false);
+    public void testLimitLimiting() { //TODO:this is not gud enough
+        digitalChannel.setState(true);
         assertEquals(true,limitSwitch.isLimiting());
     }
 }

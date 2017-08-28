@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.infrastructure;
 
+import android.support.annotation.Nullable;
+
 import org.firstinspires.ftc.teamcode.LogDbz;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,8 +24,11 @@ import static junit.framework.Assert.assertSame;
 public abstract class GetterSetterTester<T> {
     final private static String TAG = GetterSetterTester.class.getName();
 
+    /**
+     * A map mapping every class to the values it will try for that class
+     * try, as in, put into the setter and see if it comes out the getter
+     */
     private Map<Class, Object[]> passValueMap = new HashMap<>();
-
 
     private void initPassValueMap() {
         passValueMap.put(double.class, new Double[]{0d, 1d});
@@ -34,11 +39,16 @@ public abstract class GetterSetterTester<T> {
         passValueMap.put(byte.class, new Byte[]{(byte) 0, (byte) 1});
 
         passValueMap.put(boolean.class, new Boolean[]{true, false});
-
     }
 
 
-    public void test(Class dut, Map<Class, Object[]> passValueMapAddOns) {
+    /**
+     * Given a class to test, runs unit testing for passthrough on every getter and setter method
+     *
+     * @param dut                the class to test
+     * @param passValueMapAddOns additional entries to add into the passValueMap
+     */
+    public void testAllGettersAndSetters(Class dut, @Nullable Map<Class, Object[]> passValueMapAddOns) {
         T instance = getInstance();
         Method[] methods = dut.getMethods();
 
@@ -131,6 +141,13 @@ public abstract class GetterSetterTester<T> {
      */
     protected abstract T getInstance();
 
+    /**
+     * Creates a list of objects of type clazz from passValueMap.  Used to test passthrough
+     * with the getters and setters
+     *
+     * @param clazz the type of object to create
+     * @return a list of objects of type clazz
+     */
     private Object[] createObject(String objectName, String fieldName, Class<?> clazz) {
         if (clazz.isEnum()) {
             return clazz.getEnumConstants();
@@ -166,7 +183,7 @@ public abstract class GetterSetterTester<T> {
 
         final Object getResult = getter.invoke(instance);
 
-        if (getter.getReturnType().isPrimitive()) {
+        if (getter.getReturnType().isPrimitive() || getter.getReturnType().isEnum()) {
             /* Calling assetEquals() here due to autoboxing of primitive to object type. */
             assertEquals(objectName + " " + fieldName + " does not have the expected value", expected, getResult);
         } else {

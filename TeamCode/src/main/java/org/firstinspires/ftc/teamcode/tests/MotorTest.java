@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.extension.DbzMotor;
 import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDcMotorEx;
-import org.firstinspires.ftc.teamcode.tests.infrastructure.GetterSetterTester;
+import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
 import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +23,12 @@ import static org.mockito.Mockito.when;
  * Created by Kumon on 8/27/2017.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MotorTest extends GetterSetterTester<DbzMotor> {
+public class MotorTest extends DbzUnitTester<DbzMotor> {
     @Spy
     FakeDcMotorEx dcMotorEx;
     DbzMotor motor;
     @Mock LimitSwitch limitSwitch;
+
     @Before
     public void initMotor(){
         motor = new DbzMotor(dcMotorEx);
@@ -38,11 +39,11 @@ public class MotorTest extends GetterSetterTester<DbzMotor> {
         return motor;
     }
 
-    @Test
+    @Override
     public void testGettersSetters() {
         Map<Class, Object[]> testObjects = new HashMap<>();
         testObjects.put(MotorConfigurationType.class, new MotorConfigurationType[]{});
-        test(DbzMotor.class, testObjects);
+        testAllGettersAndSetters(DbzMotor.class, testObjects);
     }
 
     @Test
