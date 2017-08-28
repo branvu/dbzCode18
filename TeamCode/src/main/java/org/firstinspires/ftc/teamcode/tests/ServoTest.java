@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.extension.DbzServo;
 import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeServoEx;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -20,11 +21,15 @@ import static org.mockito.Mockito.when;
 public class ServoTest {
     @Spy
     private FakeServoEx servoEx;
+
+    DbzServo servo;
+    @Before
+    public void initServo(){
+        servo = new DbzServo(servoEx);
+    }
     @Test
-    public void testServo(){
-        DbzServo servo = new DbzServo(servoEx);
-        when(servo.getDirection())
-                .thenReturn(Servo.Direction.FORWARD);
+    public void testServoDirection(){
+        servo.setDirection(Servo.Direction.FORWARD);
         assertEquals(Servo.Direction.FORWARD,servo.getDirection());
     }
 
