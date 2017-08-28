@@ -16,6 +16,28 @@ public class DbzColorRangeSensor implements DbzDevice, RevColorRangeSensor {
     }
 
 
+    public COLOR getDominantColor() {
+        int red = red();
+        int blue = blue();
+        int green = green();
+
+        if (red > blue) {
+            if (green > red)
+                return COLOR.GREEN;
+            else
+                return COLOR.RED;
+        } else {
+            if (green > blue)
+                return COLOR.GREEN;
+            else
+                return COLOR.BLUE;
+        }
+    }
+
+    public enum COLOR {
+        RED, BLUE, GREEN
+    }
+
     @Override
     public int red() {
         return sensor.red();

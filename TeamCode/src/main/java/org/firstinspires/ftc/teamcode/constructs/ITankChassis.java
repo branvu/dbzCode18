@@ -11,22 +11,16 @@ public interface ITankChassis {
     /**
      * Moves the robot in an arc of radius radius at speed speed for radians radians
      * Note that "turning right" does not depend on whether you are going fwd or not; it's the same direction
+     * This does not support going straight forwards or backwards
      *
      * @param speed   speed to move at in m/s (positive)
      * @param radius  radius to move at in m (positive to turn right, negative to turn left)
      *                this is relative to teh center of the robot as defined by an X between the
-     *                wheels
+     *                wheels.
      * @param radians angle to move in radians (positive for fwd, negative for reverse)
      */
     void turn(double speed, double radius, double radians, boolean waitForCompletion);
 
-    /**
-     * Performs a point turn.  The speed is the speed of the wheels against the ground
-     *
-     * @param speed   speed to move at in m/s (positive)
-     * @param radians angle to move in radians (positive for fwd, negative for reverse)
-     */
-    void pointTurn(double speed, double radians, boolean waitForCompletion);
 
     /**
      * Move forward or backward
@@ -45,4 +39,14 @@ public interface ITankChassis {
      *                  0 is go straight, -1 is pointTurn left, 1 is pointTurn right
      */
     void drive(double normSpeed, double normTurn);
+
+    /**
+     * Drives the robot by setting a speed and a turning radius
+     * Intended for autonomous
+     *
+     * @param speed  speed to move at in m/s (positive)
+     * @param radius radius to turn at in m (positive for right turn, negative for left).
+     *               Infinity to go straight.  0 to point turn
+     */
+    void realDrive(double speed, double radius);
 }
