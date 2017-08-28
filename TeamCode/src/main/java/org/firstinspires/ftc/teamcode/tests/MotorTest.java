@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.teamcode.extension.DbzMotor;
 import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDcMotorEx;
+import org.firstinspires.ftc.teamcode.tests.infrastructure.GetterSetterTester;
 import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.when;
  * Created by Kumon on 8/27/2017.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MotorTest {
+public class MotorTest extends GetterSetterTester<DbzMotor> {
     @Spy
     FakeDcMotorEx dcMotorEx;
     DbzMotor motor;
@@ -28,6 +27,17 @@ public class MotorTest {
     public void initMotor(){
         motor = new DbzMotor(dcMotorEx);
     }
+
+    @Override
+    protected DbzMotor getInstance() {
+        return motor;
+    }
+
+    @Test
+    public void testGettersSetters() {
+        test(DbzMotor.class);
+    }
+
     @Test
     public void readMotorLimit(){
 
