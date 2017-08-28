@@ -22,10 +22,10 @@ import static junit.framework.Assert.assertSame;
 public abstract class GetterSetterTester<T> {
     final private static String TAG = GetterSetterTester.class.getName();
 
-    private static Map<Class, Object[]> passValueMap = new HashMap<>();
+    private Map<Class, Object[]> passValueMap = new HashMap<>();
 
 
-    static {
+    private void initPassValueMap() {
         passValueMap.put(double.class, new Double[]{0d, 1d});
         passValueMap.put(int.class, new Integer[]{0, 1});
         passValueMap.put(float.class, new Float[]{0f, 1f});
@@ -34,13 +34,18 @@ public abstract class GetterSetterTester<T> {
         passValueMap.put(byte.class, new Byte[]{(byte) 0, (byte) 1});
 
         passValueMap.put(boolean.class, new Boolean[]{true, false});
+
     }
 
 
-    public void test(Class dut) {
+    public void test(Class dut, Map<Class, Object[]> passValueMapAddOns) {
         T instance = getInstance();
-
         Method[] methods = dut.getMethods();
+
+        initPassValueMap();
+        if (passValueMapAddOns != null)
+            this.passValueMap.putAll(passValueMapAddOns);
+
 
         /* Sort items for consistent test runs. */
         final SortedMap<String, GetterSetterPair> getterSetterMapping = new TreeMap<>();
@@ -134,7 +139,7 @@ public abstract class GetterSetterTester<T> {
         if (passValueMap.containsKey(clazz)) {
             return passValueMap.get(clazz);
         } else {
-            LogDbz.e(TAG, fieldName + " in " + objectName + " of type " + clazz.getName() + " is not in passValueMap.  Skipping");
+            LogDbz.w(TAG, objectName + " " + fieldName + " of type " + clazz.getName() + " is not in passValueMap.  Skipping");
             return null;
         }
 
@@ -163,10 +168,10 @@ public abstract class GetterSetterTester<T> {
 
         if (getter.getReturnType().isPrimitive()) {
             /* Calling assetEquals() here due to autoboxing of primitive to object type. */
-            assertEquals(fieldName + " of " + objectName + " is different", expected, getResult);
+            assertEquals(objectName + " " + fieldName + " does not have the expected value", expected, getResult);
         } else {
             /* This is a normal object. The object passed in should be the exactly same object we get back. */
-            assertSame(fieldName + " of " + objectName + " is different", expected, getResult);
+            assertSame(objectName + " " + fieldName + " does not have the expected value", expected, getResult);
         }
     }
 }

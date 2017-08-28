@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
+
 import org.firstinspires.ftc.teamcode.extension.DbzMotor;
 import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDcMotorEx;
 import org.firstinspires.ftc.teamcode.tests.infrastructure.GetterSetterTester;
@@ -10,6 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -35,7 +40,9 @@ public class MotorTest extends GetterSetterTester<DbzMotor> {
 
     @Test
     public void testGettersSetters() {
-        test(DbzMotor.class);
+        Map<Class, Object[]> testObjects = new HashMap<>();
+        testObjects.put(MotorConfigurationType.class, new MotorConfigurationType[]{});
+        test(DbzMotor.class, testObjects);
     }
 
     @Test
