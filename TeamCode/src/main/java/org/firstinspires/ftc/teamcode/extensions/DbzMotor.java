@@ -29,7 +29,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     /**
      * This is the default angle unit to use with getVelocity and setVelocity
      */
-    private AngleUnit defaultAngleUnit = AngleUnit.DEGREES;
+    final public static AngleUnit defaultAngleUnit = AngleUnit.RADIANS;
 
     /**
      * This is a list containing all the Limiter objects for this motor
@@ -266,20 +266,9 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     }
 
 
-    /** Allow a default AngleUnit to be set for get and set velocity **/
     /**
-     * Retrieves the current AngleUnit used if none is specified for use with getVelocity and setVelocity
-     *
-     * @return the AngleUnit used by default
-     */
-    public AngleUnit getDefaultAngleUnit() {
-        return defaultAngleUnit;
-    }
-
-    public void setDefaultAngleUnit(AngleUnit defaultAngleUnit) {
-        this.defaultAngleUnit = defaultAngleUnit;
-    }
-
+     * Use the default AngleUnit to be set for get and set velocity
+     **/
     public double getVelocity() {
         return getVelocity(defaultAngleUnit);
     }
@@ -288,6 +277,28 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
         setVelocity(angularRate, defaultAngleUnit);
     }
 
+    /**
+     * Get the maximum achievable radians per second
+     *
+     * @return the maximum number of radians per second the motor can spin at
+     */
+    public double getAchieveableMaxRadiansPerSec() {
+        MotorConfigurationType type = dcMotorEx.getMotorType();
+        return 2 * Math.PI * type.getAchieveableMaxRPMFraction() * type.getMaxRPM() / 60;
+    }
+
+    /**
+     * Takes a speed in rad/s, converts it to a power, and calls setPower on it
+     *
+     * @param speed in rad/s
+     */
+    public void setSpeedUsingSetPower(double speed) {
+        speed = Math.abs(speed);
+
+        double rightPower = speed / getAchieveableMaxRadiansPerSec();
+        if (rightPower > 1) rightPower = 1;
+        setPower(rightPower);
+    }
 
     /** Delegate all other methods of DcMotorEx **/
     /**

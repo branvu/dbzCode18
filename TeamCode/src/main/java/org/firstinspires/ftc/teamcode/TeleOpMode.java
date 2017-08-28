@@ -18,6 +18,8 @@ public class TeleOpMode extends DbzOpMode {
         limitedMotor.addLimitSwitch(limiter1);
         limitedMotor.addLimitSwitch(limiter2);
         limitedMotor.startLimiting();
+
+
     }
 
     @Override
@@ -28,7 +30,7 @@ public class TeleOpMode extends DbzOpMode {
 
     @Override
     protected void dbzLoop() {
-        Chassis.drive(gamepad1.left_stick_y);
+
     }
 
     @Override

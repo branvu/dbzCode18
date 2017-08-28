@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.extensions;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -36,7 +37,7 @@ public class DbzHardwareMap {
         }
 
         // Otherwise, go get the DcMotor out of hardwareMap
-        DcMotor base = hardwareMap.dcMotor.get(motor.name);
+        DcMotor base = hardwareMap.dcMotor.get(motor.getName());
 
         // we can only make a DbzMotor if we got an DcMotorEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
@@ -45,7 +46,7 @@ public class DbzHardwareMap {
             createdDevices.put(motor, dbzMotor);
             return dbzMotor;
         } else {
-            throw new RuntimeException("Motor " + motor.name + " is not an Ex type; it is " + base.getClass().getSimpleName()
+            throw new RuntimeException("Motor " + motor.getName() + " is not an Ex type; it is " + base.getClass().getSimpleName()
                     + " are you sure the attached hardware supports DcMotorEx?");
         }
     }
@@ -57,7 +58,7 @@ public class DbzHardwareMap {
                 return (DbzServo) createdDevices.get(servo);
         }
 
-        Servo base = hardwareMap.servo.get(servo.name);
+        Servo base = hardwareMap.servo.get(servo.getName());
 
         // we can only make a DbzServo if we got an ServoEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
@@ -66,7 +67,7 @@ public class DbzHardwareMap {
             createdDevices.put(servo, dbzServo);
             return dbzServo;
         } else {
-            throw new RuntimeException("Servo " + servo.name + " is not an Ex type; it is " + base.getClass().getSimpleName()
+            throw new RuntimeException("Servo " + servo.getName() + " is not an Ex type; it is " + base.getClass().getSimpleName()
                     + " are you sure the attached hardware supports ServoEx?");
         }
     }
@@ -78,9 +79,27 @@ public class DbzHardwareMap {
                 return (DbzDigitalChannel) createdDevices.get(digitalChannel);
         }
 
-        DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel(hardwareMap.digitalChannel.get(digitalChannel.name));
+        DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel(hardwareMap.digitalChannel.get(digitalChannel.getName()));
         createdDevices.put(digitalChannel, dbzDigitalChannel);
         return dbzDigitalChannel;
+    }
+
+    public static DbzColorRangeSensor getDbzColorRangeSensor(DbzColorRangeSensorNames colorRangeSensor) {
+        if (createdDevices.containsKey(colorRangeSensor)) {
+            if (createdDevices.get(colorRangeSensor) instanceof DbzColorRangeSensor)
+                return (DbzColorRangeSensor) createdDevices.get(colorRangeSensor);
+        }
+
+        ColorSensor base = hardwareMap.colorSensor.get(colorRangeSensor.getName());
+
+        if (base instanceof RevColorRangeSensor) {
+            DbzColorRangeSensor dbzColorRangeSensor = new DbzColorRangeSensor((RevColorRangeSensor) base);
+            createdDevices.put(colorRangeSensor, dbzColorRangeSensor);
+            return dbzColorRangeSensor;
+        } else {
+            throw new RuntimeException("Color sensor " + colorRangeSensor.getName() + " is not a Rev sensor; it is "
+                    + base.getClass().getSimpleName() + " are you sure the attached hardware is a Rev Color Sensor?");
+        }
     }
 
 
@@ -89,35 +108,67 @@ public class DbzHardwareMap {
     }
 
     public enum DbzMotorNames implements DbzDeviceNames {
-        left("LeftMotor"), limited("limitedmotor");
+        left("LeftMotor"), limited("limitedmotor"), right("RightMotor");
 
-        String name;
+        private String name;
 
         DbzMotorNames(String name) {
             this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
         }
     }
 
     public enum DbzServoNames implements DbzDeviceNames {
         cam("CamServo");
 
-        String name;
+        private String name;
 
         DbzServoNames(String name) {
             this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
         }
     }
 
     public enum DbzDigitalChannelNames implements DbzDeviceNames {
         limiter1("limit1"), limiter2("limit2");
 
-        String name;
+        private String name;
 
         DbzDigitalChannelNames(String name) {
             this.name = name;
         }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
+    public enum DbzColorRangeSensorNames implements DbzDeviceNames {
+        sensor("limit1");
+
+        private String name;
+
+        DbzColorRangeSensorNames(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+
     interface DbzDeviceNames {
+        String getName();
     }
 }
