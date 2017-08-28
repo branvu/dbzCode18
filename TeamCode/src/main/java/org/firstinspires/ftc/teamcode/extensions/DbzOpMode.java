@@ -47,7 +47,7 @@ public abstract class DbzOpMode extends LinearOpMode {
         // then the constructs
         chassis = new TankChassis(leftMotor, rightMotor);
 
-        imu = new DbzIMU(DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.imu));
+        imu = DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.imu);
 
 
         /* Run our init code and say we are initialized */
