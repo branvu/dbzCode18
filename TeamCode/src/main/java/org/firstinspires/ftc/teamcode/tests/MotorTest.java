@@ -24,17 +24,12 @@ public class MotorTest {
     FakeDcMotorEx dcMotorEx;
     DbzMotor motor;
     @Mock LimitSwitch limitSwitch;
-    
     @Before
     public void initMotor(){
         motor = new DbzMotor(dcMotorEx);
     }
     @Test
     public void readMotorLimit(){
-        //motor.addLimitSwitch(limitSwitch);
-
-
-
 
         motor.addLimitSwitch(limitSwitch);
         motor.startLimiting();
