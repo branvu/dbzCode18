@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.teamcode.extension.DbzHardwareMap;
-import org.firstinspires.ftc.teamcode.extension.DbzMotor;
-import org.firstinspires.ftc.teamcode.extension.DbzServo;
+import org.firstinspires.ftc.teamcode.extensions.DbzHardwareMap;
+import org.firstinspires.ftc.teamcode.extensions.DbzMotor;
+import org.firstinspires.ftc.teamcode.extensions.DbzServo;
 
 /**
- * Created by Matthew on 8/26/2017.
+ * Right now, a placeholder demonstrating possible higher level constructs
  */
 
 public class Chassis {

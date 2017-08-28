@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.tests.FakeHardware;
+package org.firstinspires.ftc.teamcode.tests.fakehardware;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public abstract class FakeDcMotorEx implements DcMotorEx {
+    final private static String TAG = FakeDcMotorEx.class.getName();
+
     private double power = 0;
     private Direction direction = Direction.FORWARD;
     private RunMode runMode = RunMode.RUN_USING_ENCODER;

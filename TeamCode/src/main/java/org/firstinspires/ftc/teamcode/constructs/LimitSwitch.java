@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.utils;
+package org.firstinspires.ftc.teamcode.constructs;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.extension.DbzDigitalChannel;
+import org.firstinspires.ftc.teamcode.extensions.DbzDigitalChannel;
 
 /**
  * Created by Matthew on 8/26/2017.
@@ -49,7 +49,6 @@ public class LimitSwitch {
         else
             return !limitSwitch.getState();
     }
-
 
     public boolean isActiveHigh() {
         return activeHigh;

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.tests.infrastructure;
 
 import android.support.annotation.Nullable;
 
-import org.firstinspires.ftc.teamcode.LogDbz;
+import org.firstinspires.ftc.teamcode.utils.LogDbz;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,11 +17,11 @@ import static junit.framework.Assert.assertSame;
 /**
  * Created by Matthew on 8/27/2017.
  * <p>
- * Heavily adapted from https://github.com/Blastman/DtoTester
+ * Adapted from https://github.com/Blastman/DtoTester
  * Primary changes: works on Java 7, tests more than one value, ignores immutables
  */
 
-public abstract class GetterSetterTester<T> {
+public class GetterSetterTester {
     final private static String TAG = GetterSetterTester.class.getName();
 
     /**
@@ -41,17 +41,18 @@ public abstract class GetterSetterTester<T> {
         passValueMap.put(boolean.class, new Boolean[]{true, false});
     }
 
-
     /**
-     * Given a class to test, runs unit testing for passthrough on every getter and setter method
+     * Given a class to test (dut), runs unit testing for passthrough on every getter and setter method
+     * that is, put some values into the setter and see if they come out the getter
      *
-     * @param dut                the class to test
+     * @param dutInstance        the instance of the dut that we are working with
      * @param passValueMapAddOns additional entries to add into the passValueMap
      */
-    public void testAllGettersAndSetters(Class dut, @Nullable Map<Class, Object[]> passValueMapAddOns) {
-        T instance = getInstance();
-        Method[] methods = dut.getMethods();
+    protected void testAllGettersAndSetters(Object dutInstance, @Nullable Map<Class, Object[]> passValueMapAddOns) {
+        // all the methods of the dut that we need to run through
+        Method[] methods = dutInstance.getClass().getMethods();
 
+        // add any extra values to passValueMap.  null means don't bother with it
         initPassValueMap();
         if (passValueMapAddOns != null)
             this.passValueMap.putAll(passValueMapAddOns);
@@ -98,26 +99,25 @@ public abstract class GetterSetterTester<T> {
             }
         }
 
-        /*
-         * Found all our mappings. Now call the getter and setter and see if it works
-         */
+        // Found all our mappings. Now call the getter and setter and see if it works (if we can)
         for (final Map.Entry<String, GetterSetterPair> entry : getterSetterMapping.entrySet()) {
             final GetterSetterPair pair = entry.getValue();
-
             final String objectName = entry.getKey();
+
             final String fieldName = objectName.substring(0, 1).toLowerCase() + objectName.substring(1);
 
             if (pair.hasGetterAndSetter()) {
-                /* Create an object. */
+                // create the list of objects to test
                 final Class<?> parameterType = pair.getSetter().getParameterTypes()[0];
                 final Object[] testers = createObject(objectName, fieldName, parameterType);
                 if (testers == null)
                     continue;
 
+                // test all the objects individually
                 for (Object tester : testers) {
                     try {
-                        pair.getSetter().invoke(instance, tester);
-                        callGetter(objectName, fieldName, pair.getGetter(), instance, tester);
+                        pair.getSetter().invoke(dutInstance, tester);
+                        callGetter(objectName, fieldName, pair.getGetter(), dutInstance, tester);
                     } catch (IllegalAccessException e) {
                         LogDbz.d(TAG, "Found inaccessible getter/setter method " + fieldName + " in " + objectName);
                         e.printStackTrace();
@@ -126,6 +126,7 @@ public abstract class GetterSetterTester<T> {
                         e.printStackTrace();
                     }
                 }
+                LogDbz.v(TAG, "Passed getter/setter method for " + objectName + " " + fieldName);
             } else if (pair.getGetter() != null) {
                 LogDbz.i(TAG, "Getter without a setter for " + fieldName + ".  Ignoring");
             } else {
@@ -133,13 +134,6 @@ public abstract class GetterSetterTester<T> {
             }
         }
     }
-
-    /**
-     * Returns an instance to use to test the get and set methods.
-     *
-     * @return An instance to use to test the get and set methods.
-     */
-    protected abstract T getInstance();
 
     /**
      * Creates a list of objects of type clazz from passValueMap.  Used to test passthrough
@@ -178,7 +172,7 @@ public abstract class GetterSetterTester<T> {
      *                                   the corresponding formal parameter type by a method invocation conversion.
      * @throws InvocationTargetException if the underlying method throws an exception.
      */
-    private void callGetter(String objectName, String fieldName, Method getter, T instance, Object expected)
+    private void callGetter(String objectName, String fieldName, Method getter, Object instance, Object expected)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
         final Object getResult = getter.invoke(instance);
@@ -189,6 +183,66 @@ public abstract class GetterSetterTester<T> {
         } else {
             /* This is a normal object. The object passed in should be the exactly same object we get back. */
             assertSame(objectName + " " + fieldName + " does not have the expected value", expected, getResult);
+        }
+    }
+
+    /**
+     * A utility class which holds a related getter and setter method.
+     */
+    private class GetterSetterPair {
+        /**
+         * The get method.
+         */
+        private Method getter;
+
+        /**
+         * The set method.
+         */
+        private Method setter;
+
+        /**
+         * Returns the get method.
+         *
+         * @return The get method.
+         */
+        public Method getGetter() {
+            return getter;
+        }
+
+        /**
+         * Returns the set method.
+         *
+         * @return The set method.
+         */
+        public Method getSetter() {
+            return setter;
+        }
+
+        /**
+         * Returns if this has a getter and setting method set.
+         *
+         * @return If this has a getter and setting method set.
+         */
+        public boolean hasGetterAndSetter() {
+            return this.getter != null && this.setter != null;
+        }
+
+        /**
+         * Sets the get Method.
+         *
+         * @param getter The get Method.
+         */
+        public void setGetter(Method getter) {
+            this.getter = getter;
+        }
+
+        /**
+         * Sets the set Method.
+         *
+         * @param setter The set Method.
+         */
+        public void setSetter(Method setter) {
+            this.setter = setter;
         }
     }
 }

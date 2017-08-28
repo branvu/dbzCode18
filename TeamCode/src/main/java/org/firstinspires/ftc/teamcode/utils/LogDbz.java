@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.utils;
 
 import android.util.Log;
 
 /**
- * Created by Matthew on 8/27/2017.
+ * A wrapper around android Log that allows easy switching to System.out.println() at compile time
  */
 
 public class LogDbz {
@@ -31,22 +31,25 @@ public class LogDbz {
         else
             System.out.println(TAG + "/d: " + msg);
     }
+
     public static void e(String TAG, String msg) {
         if (useAndroid)
             Log.e(TAG, msg);
         else
             System.out.println(TAG + "/e: " + msg);
     }
+
     public static void i(String TAG, String msg){
         if(useAndroid)
             Log.i(TAG,msg);
         else
-            System.out.println(TAG + "/i:" + msg);
+            System.out.println(TAG + "/i: " + msg);
     }
+
     public static void wtf(String TAG, String msg){
         if(useAndroid)
             Log.wtf(TAG,msg);
         else
-            System.out.println(TAG + "/wtf:" + msg);
+            System.out.println(TAG + "/wtf: " + msg);
     }
 }

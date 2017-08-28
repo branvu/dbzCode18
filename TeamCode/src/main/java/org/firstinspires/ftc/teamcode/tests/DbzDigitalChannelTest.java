@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import org.firstinspires.ftc.teamcode.extension.DbzDigitalChannel;
-import org.firstinspires.ftc.teamcode.tests.FakeHardware.FakeDigitalChannel;
+import org.firstinspires.ftc.teamcode.extensions.DbzDigitalChannel;
+import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeDigitalChannel;
 import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -13,7 +13,9 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)
 
-public class DigitalChannelTest extends DbzUnitTester<DbzDigitalChannel> {
+public class DbzDigitalChannelTest extends DbzUnitTester {
+    final private static String TAG = DbzDigitalChannelTest.class.getName();
+
     @Spy
     FakeDigitalChannel fakeDigitalChannel;
 
@@ -26,11 +28,6 @@ public class DigitalChannelTest extends DbzUnitTester<DbzDigitalChannel> {
 
     @Override
     public void testGettersSetters() {
-        testAllGettersAndSetters(DbzDigitalChannel.class, null);
-    }
-
-    @Override
-    protected DbzDigitalChannel getInstance() {
-        return dbzDigitalChannel;
+        testAllGettersAndSetters(dbzDigitalChannel, null);
     }
 }

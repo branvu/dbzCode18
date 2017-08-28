@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests.FakeHardware;
+package org.firstinspires.ftc.teamcode.tests.fakehardware;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
@@ -7,8 +7,11 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
  */
 
 public abstract class FakeDigitalChannel implements DigitalChannel{
-    Mode mode = Mode.INPUT;
-    boolean state = false;
+    final private static String TAG = FakeDigitalChannel.class.getName();
+
+    private Mode mode = Mode.INPUT;
+    private boolean state = false;
+
     @Override
     public Mode getMode() {
         return mode;

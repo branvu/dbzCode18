@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.extension;
+package org.firstinspires.ftc.teamcode.extensions;
 
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;

@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.tests.infrastructure;
 import org.junit.Test;
 
 /**
- * Created by Matthew on 8/27/2017.
+ * A base class for all of our unit tests to extend
  */
 
-public abstract class DbzUnitTester<T> extends GetterSetterTester<T> {
+public abstract class DbzUnitTester extends GetterSetterTester {
     final private static String TAG = DbzUnitTester.class.getName();
 
+    /**
+     * Tests all the getter and setters for the particular dut
+     */
     @Test
     public abstract void testGettersSetters();
 }

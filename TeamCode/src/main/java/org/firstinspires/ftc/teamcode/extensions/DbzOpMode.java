@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.extension;
+package org.firstinspires.ftc.teamcode.extensions;
 
 import android.util.Log;
 
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
+import org.firstinspires.ftc.teamcode.constructs.LimitSwitch;
 
 /**
  * Created by Matthew on 8/25/2017.

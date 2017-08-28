@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.extension.DbzOpMode;
+import org.firstinspires.ftc.teamcode.extensions.DbzOpMode;
 
 /**
  * Created by Matthew on 8/25/2017.

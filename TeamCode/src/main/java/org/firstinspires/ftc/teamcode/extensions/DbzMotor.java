@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.extension;
+package org.firstinspires.ftc.teamcode.extensions;
 
 
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.LogDbz;
-import org.firstinspires.ftc.teamcode.utils.LimitSwitch;
+import org.firstinspires.ftc.teamcode.constructs.LimitSwitch;
+import org.firstinspires.ftc.teamcode.utils.LogDbz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,15 +144,16 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
             breakThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    LogDbz.i(TAG, "Starting breakOnPress thread");
                     try {
-                        //While limit switch is limiting, wait
+                        // While limit switch is limiting, wait
                         while (!(!limitSwitch.isLimiting() || Thread.interrupted()))
                             Thread.sleep(millisWaitDuration);
                     } catch (InterruptedException e) {
                         LogDbz.v(TAG, "Thread shut down while waiting for limit switch press; stopping motor");
-                        e.printStackTrace();
                     }
                     setPower(0);
+                    LogDbz.i(TAG, "Limit switch hit; ending breakOnPress thread");
                 }
             });
             breakThread.start();
@@ -210,7 +211,6 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
                         }
                     } catch (InterruptedException e) {
                         LogDbz.v(TAG, "Limit switch listener thread killed while sleeping");
-                        e.printStackTrace();
                     }
                 }
                 LogDbz.v(TAG, "Ending limit switch listening thread");
