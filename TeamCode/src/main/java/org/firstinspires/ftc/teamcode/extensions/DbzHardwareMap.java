@@ -84,13 +84,14 @@ public class DbzHardwareMap {
         createdDevices.put(digitalChannel, dbzDigitalChannel);
         return dbzDigitalChannel;
     }
+
     public static DbzIMU getDbzIMU(DbzIMUNames IMU){
         if(createdDevices.containsKey(IMU)){
             if(createdDevices.get(IMU) instanceof DbzIMU){
                 return (DbzIMU) createdDevices.get(IMU);
             }
         }
-        BNO055IMU imu = hardwareMap.get(BNO055IMU.class,IMU.name);
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, IMU.getName());
 
         DbzIMU dbzIMU = new DbzIMU(imu);
         createdDevices.put(IMU,dbzIMU);
@@ -168,7 +169,15 @@ public class DbzHardwareMap {
         imu("imu");
 
         String name;
-        DbzIMUNames(String name){this.name = name;}
+
+        DbzIMUNames(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
     public enum DbzColorRangeSensorNames implements DbzDeviceNames {
