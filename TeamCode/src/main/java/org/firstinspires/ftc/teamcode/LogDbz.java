@@ -37,15 +37,6 @@ public class LogDbz {
         else
             System.out.println(TAG + "/e: " + msg);
     }
-
-    public static void e(String TAG, String msg, Exception e) {
-        if (useAndroid)
-            Log.e(TAG, msg);
-        else {
-            System.out.println(TAG + "/e: " + msg);
-            e.printStackTrace();
-        }
-    }
     public static void i(String TAG, String msg){
         if(useAndroid)
             Log.i(TAG,msg);
