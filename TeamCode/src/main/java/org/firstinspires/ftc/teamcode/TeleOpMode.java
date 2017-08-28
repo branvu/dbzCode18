@@ -30,7 +30,7 @@ public class TeleOpMode extends DbzOpMode {
 
     @Override
     protected void dbzLoop() {
-
+        tankChassis.drive(gamepad1.left_stick_x, gamepad1.left_stick_y);
     }
 
     @Override

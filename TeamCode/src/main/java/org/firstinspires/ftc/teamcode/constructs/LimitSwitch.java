@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.constructs;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.teamcode.extensions.DbzDigitalChannel;
+import org.firstinspires.ftc.teamcode.utils.LogDbz;
 
 /**
  * Created by Matthew on 8/26/2017.
@@ -40,7 +39,7 @@ public class LimitSwitch {
      */
     public boolean isLimiting() {
         if (limitSwitch.getMode() == DigitalChannel.Mode.OUTPUT) {
-            Log.e(TAG, "Attempted read on LimitSwitch while that pin was configured to output!");
+            LogDbz.e(TAG, "Attempted read on LimitSwitch while that pin was configured to output!");
             return true; //fail safe.  Something's wrong if we have reached this point
         }
 

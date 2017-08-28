@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.extensions;
 
 
+import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
@@ -26,10 +27,6 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
      */
     private boolean limitLockOut = false;
 
-    /**
-     * This is the default angle unit to use with getVelocity and setVelocity
-     */
-    final public static AngleUnit defaultAngleUnit = AngleUnit.RADIANS;
 
     /**
      * This is a list containing all the Limiter objects for this motor
@@ -40,12 +37,21 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     public DbzMotor(DcMotorEx dcMotorEx) {
         this.dcMotorEx = dcMotorEx;
 
+        // we only have this one kind of motor, so they can all be of this type
+        // not sure this needs explicit calling?
+        setMotorType(MotorConfigurationType.getMotorType(Matrix12vMotor.class));
+
         if (dcMotorEx instanceof DbzMotor)
             LogDbz.w(TAG, "Someone just made a DbzMotor wrapper around another DbzMotor; this is probably not intended");
     }
 
+    public void init(ZeroPowerBehavior zeroPowerBehavior, Direction direction) {
+        setZeroPowerBehavior(zeroPowerBehavior);
+        setDirection(direction);
+    }
 
-    /** Limit switch handling - enabling and using the functionality **/
+
+    /* Limit switch handling - enabling and using the functionality */
     /**
      * Assign a limit switch to this motor.  This can be called up to two times
      *
@@ -227,10 +233,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     }
 
 
-    /** Limit switch lockout logic.  If the limit switch is pressed, keep everyone else out **/
-    /**
-     * @param limitLockOut
-     */
+    /* Limit switch lockout logic.  If the limit switch is pressed, keep everyone else out */
     private synchronized void setLimitLockOut(boolean limitLockOut) {
         this.limitLockOut = limitLockOut;
     }
@@ -266,23 +269,13 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     }
 
 
-    /**
-     * Use the default AngleUnit to be set for get and set velocity
-     **/
-    public double getVelocity() {
-        return getVelocity(defaultAngleUnit);
-    }
-
-    public void setVelocity(double angularRate) {
-        setVelocity(angularRate, defaultAngleUnit);
-    }
-
+    /* Methods dealing with velocity */
     /**
      * Get the maximum achievable radians per second
      *
      * @return the maximum number of radians per second the motor can spin at
      */
-    public double getAchieveableMaxRadiansPerSec() {
+    public double getAchievableMaxRadiansPerSec() {
         MotorConfigurationType type = dcMotorEx.getMotorType();
         return 2 * Math.PI * type.getAchieveableMaxRPMFraction() * type.getMaxRPM() / 60;
     }
@@ -295,12 +288,12 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     public void setSpeedUsingSetPower(double speed) {
         speed = Math.abs(speed);
 
-        double rightPower = speed / getAchieveableMaxRadiansPerSec();
+        double rightPower = speed / getAchievableMaxRadiansPerSec();
         if (rightPower > 1) rightPower = 1;
         setPower(rightPower);
     }
 
-    /** Delegate all other methods of DcMotorEx **/
+    /* Delegate all other methods to DcMotorEx */
     /**
      * @param unit
      * @return

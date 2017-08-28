@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.constructs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.extensions.DbzMotor;
 import org.firstinspires.ftc.teamcode.utils.LogDbz;
 
@@ -17,6 +18,48 @@ public class TankChassis implements ITankChassis {
     public TankChassis(DbzMotor leftWheel, DbzMotor rightWheel) {
         this.leftWheel = leftWheel;
         this.rightWheel = rightWheel;
+    }
+
+    @Override
+    public void drive(double normSpeed, double normTurn) {
+        normSpeed = boundToOne(normSpeed, false);
+        normTurn = boundToOne(normTurn, true);
+
+        double slowFactor = 1 - Math.abs(normTurn);
+        if (normTurn > 0) {
+            leftWheel.setVelocity(leftWheel.getAchievableMaxRadiansPerSec() * normSpeed,
+                    AngleUnit.RADIANS);
+            rightWheel.setVelocity(slowFactor * rightWheel.getAchievableMaxRadiansPerSec() * normSpeed,
+                    AngleUnit.RADIANS);
+        } else {
+            leftWheel.setVelocity(slowFactor * leftWheel.getAchievableMaxRadiansPerSec() * normSpeed,
+                    AngleUnit.RADIANS);
+            rightWheel.setVelocity(rightWheel.getAchievableMaxRadiansPerSec() * normSpeed,
+                    AngleUnit.RADIANS);
+        }
+    }
+
+    /**
+     * Given a double, makes it fit between [0,1] if negAllowed is false, or [-1,1] otherwise
+     *
+     * @param number     the double to range
+     * @param negAllowed whether the accepted range is [0,1] or [-1,1]
+     * @return the ranged double
+     */
+    private double boundToOne(double number, boolean negAllowed) {
+        if (number > 1)
+            return 1;
+        if (number < 0) {
+            if (negAllowed) {
+                if (number < -1)
+                    return -1;
+                else
+                    return number;
+            } else {
+                return 0;
+            }
+        }
+        return number;
     }
 
     @Override

@@ -18,7 +18,9 @@ import static junit.framework.Assert.assertSame;
  * Created by Matthew on 8/27/2017.
  * <p>
  * Adapted from https://github.com/Blastman/DtoTester
+ * (licensed into public domain through the UnLicense)
  * Primary changes: works on Java 7, tests more than one value, ignores immutables
+ * doesn't require instance and class or use generics
  */
 
 public class GetterSetterTester {

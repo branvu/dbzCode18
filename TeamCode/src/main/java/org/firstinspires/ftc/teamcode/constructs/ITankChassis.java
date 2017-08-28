@@ -13,7 +13,9 @@ public interface ITankChassis {
      * Note that "turning right" does not depend on whether you are going fwd or not; it's the same direction
      *
      * @param speed   speed to move at in m/s (positive)
-     * @param radius  radius to move in m (positive to turn right, negative to turn left)
+     * @param radius  radius to move at in m (positive to turn right, negative to turn left)
+     *                this is relative to teh center of the robot as defined by an X between the
+     *                wheels
      * @param radians angle to move in radians (positive for fwd, negative for reverse)
      */
     void turn(double speed, double radius, double radians, boolean waitForCompletion);
@@ -33,4 +35,14 @@ public interface ITankChassis {
      * @param distance distance to move in m (positive for fwd, negative for reverse)
      */
     void move(double speed, double distance, boolean waitForCompletion);
+
+    /**
+     * Drives the robot by setting velocity based on a normalized speed and turn factor
+     * Intended for teleop
+     *
+     * @param normSpeed a speed on [0,1] that represents how fast to go
+     * @param normTurn  a turning factor on [-1,1] representing how sharp to turn
+     *                  0 is go straight, -1 is pointTurn left, 1 is pointTurn right
+     */
+    void drive(double normSpeed, double normTurn);
 }

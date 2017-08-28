@@ -166,7 +166,7 @@ public class DbzHardwareMap {
         }
     }
     public enum DbzIMUNames implements DbzDeviceNames {
-        imu("imu");
+        internalIMU("internalIMU");
 
         String name;
 
