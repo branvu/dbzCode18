@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.extensions;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -83,6 +84,18 @@ public class DbzHardwareMap {
         createdDevices.put(digitalChannel, dbzDigitalChannel);
         return dbzDigitalChannel;
     }
+    public static DbzIMU getDbzIMU(DbzIMUNames IMU){
+        if(createdDevices.containsKey(IMU)){
+            if(createdDevices.get(IMU) instanceof DbzIMU){
+                return (DbzIMU) createdDevices.get(IMU);
+            }
+        }
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class,IMU.name);
+
+        DbzIMU dbzIMU = new DbzIMU(imu);
+        createdDevices.put(IMU,dbzIMU);
+        return dbzIMU;
+    }
 
     public static DbzColorRangeSensor getDbzColorRangeSensor(DbzColorRangeSensorNames colorRangeSensor) {
         if (createdDevices.containsKey(colorRangeSensor)) {
@@ -150,6 +163,12 @@ public class DbzHardwareMap {
         public String getName() {
             return name;
         }
+    }
+    public enum DbzIMUNames implements DbzDeviceNames {
+        imu("imu");
+
+        String name;
+        DbzIMUNames(String name){this.name = name;}
     }
 
     public enum DbzColorRangeSensorNames implements DbzDeviceNames {

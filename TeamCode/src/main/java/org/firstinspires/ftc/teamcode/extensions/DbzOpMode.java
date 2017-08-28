@@ -32,6 +32,7 @@ public abstract class DbzOpMode extends LinearOpMode {
     protected DbzMotor limitedMotor;
     protected LimitSwitch limiter1, limiter2;
     protected ITankChassis chassis;
+    protected DbzIMU imu;
 
 
     @Override
@@ -46,6 +47,7 @@ public abstract class DbzOpMode extends LinearOpMode {
         // then the constructs
         chassis = new TankChassis(leftMotor, rightMotor);
 
+        imu = new DbzIMU(DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.imu));
 
 
         /* Run our init code and say we are initialized */
