@@ -7,16 +7,13 @@ import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
 import org.firstinspires.ftc.teamcode.utils.LogDbz;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by Brandon on 8/27/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
 
 public class LimitSwitchTest extends DbzUnitTester {
     final private static String TAG = LimitSwitchTest.class.getName();

@@ -9,10 +9,8 @@ import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeDcMotorEx;
 import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +21,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Kumon on 8/27/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DbzMotorTest extends DbzUnitTester {
     final private static String TAG = DbzMotorTest.class.getName();
 

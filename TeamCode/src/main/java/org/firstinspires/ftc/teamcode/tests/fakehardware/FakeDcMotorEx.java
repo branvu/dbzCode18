@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.fakehardware;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -14,6 +15,7 @@ public abstract class FakeDcMotorEx implements DcMotorEx {
     private ZeroPowerBehavior zeroPowerBehavior = ZeroPowerBehavior.BRAKE;
     private int targetPostion = 1000;
     private double velocity = 0;
+    private MotorConfigurationType motorConfigurationType;
 
     @Override
     public void setDirection(Direction direction) {
@@ -83,5 +85,15 @@ public abstract class FakeDcMotorEx implements DcMotorEx {
     @Override
     public double getVelocity(AngleUnit unit) {
         return velocity;
+    }
+
+    @Override
+    public MotorConfigurationType getMotorType() {
+        return motorConfigurationType;
+    }
+
+    @Override
+    public void setMotorType(MotorConfigurationType motorType) {
+        this.motorConfigurationType = motorType;
     }
 }

@@ -37,17 +37,17 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
     public DbzMotor(DcMotorEx dcMotorEx) {
         this.dcMotorEx = dcMotorEx;
 
-        // we only have this one kind of motor, so they can all be of this type
-        // not sure this needs explicit calling?
-        setMotorType(MotorConfigurationType.getMotorType(Matrix12vMotor.class));
-
         if (dcMotorEx instanceof DbzMotor)
             LogDbz.w(TAG, "Someone just made a DbzMotor wrapper around another DbzMotor; this is probably not intended");
     }
 
-    public void init(ZeroPowerBehavior zeroPowerBehavior, Direction direction) {
+    void init(ZeroPowerBehavior zeroPowerBehavior, Direction direction) {
         setZeroPowerBehavior(zeroPowerBehavior);
         setDirection(direction);
+
+        // we only have this one kind of motor, so they can all be of this type
+        // not sure this needs explicit calling?
+        setMotorType(MotorConfigurationType.getMotorType(Matrix12vMotor.class));
     }
 
 
@@ -280,18 +280,6 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
         return 2 * Math.PI * type.getAchieveableMaxRPMFraction() * type.getMaxRPM() / 60;
     }
 
-    /**
-     * Takes a speed in rad/s, converts it to a power, and calls setPower on it
-     *
-     * @param speed in rad/s
-     */
-    public void setSpeedUsingSetPower(double speed) {
-        speed = Math.abs(speed);
-
-        double rightPower = speed / getAchievableMaxRadiansPerSec();
-        if (rightPower > 1) rightPower = 1;
-        setPower(rightPower);
-    }
 
     /* Delegate all other methods to DcMotorEx */
     /**

@@ -41,7 +41,8 @@ public class TankChassis implements ITankChassis {
 
     @Override
     public void realDrive(double speed, double radius) {
-        speed = Math.abs(speed);
+        // convert from linear speed in m/s to rotational speed in rad/s
+        speed = Math.abs(speed / WHEEL_RADIUS);
         // if you give an infinite radius, then let's go straight.
         // +inf to go fwd or -inf to go backwards
         if (radius == Double.POSITIVE_INFINITY) {
@@ -53,17 +54,17 @@ public class TankChassis implements ITankChassis {
             rightWheel.setVelocity(-speed, AngleUnit.RADIANS);
             return;
         }
-
         // if radius is positive (right turn), then rightRadius > leftRadius
         // if radius is negative (left turn), then rightRadius < leftRadius
-        double leftRadius = (Math.abs(radius) - signumPos(radius) * (CHASSIS_WIDTH / 2));
-        double rightRadius = (Math.abs(radius) + signumPos(radius) * (CHASSIS_WIDTH / 2));
+        double leftRadius = (Math.abs(radius) - signumSignedZeros(radius) * (CHASSIS_WIDTH / 2));
+        double rightRadius = (Math.abs(radius) + signumSignedZeros(radius) * (CHASSIS_WIDTH / 2));
 
         // so, if radius is positive, then slowFactor < 1
         // if radius is negative, then slowFactor > 1
         // we need to always slow down to remain under the speed limit, not speed something up
-        double slowFactor = Math.abs(leftRadius / rightRadius);
-        if (radius > 0) {
+        double slowFactor = leftRadius / rightRadius;
+        // handle signed 0s in this equation
+        if (1 / radius > 0) {
             leftWheel.setVelocity(speed, AngleUnit.RADIANS);
             rightWheel.setVelocity(slowFactor * speed, AngleUnit.RADIANS);
         } else {
@@ -74,16 +75,16 @@ public class TankChassis implements ITankChassis {
     }
 
     @Override
-    public void turn(double speed, final double radius, final double radians, boolean waitForCompletion) {
+    public void turn(double speed, double radius, double radians, boolean waitForCompletion) {
         // the fraction of the circle we are traveling, pos or neg
         double circle_fraction = radians / (2 * Math.PI);
         // the distance on that circle we are traveling in m, pos or neg
         // this is the circle_fraction*2*pi*r.  However, r depends on which way we are turning
         // for each wheel, since each wheel is tracing out a circle of a different radius
         final double left_arc_distance = circle_fraction * (Math.PI * 2 *
-                (Math.abs(radius) - signumPos(radius) * (CHASSIS_WIDTH / 2)));
+                (Math.abs(radius) - signumSignedZeros(radius) * (CHASSIS_WIDTH / 2)));
         final double right_arc_distance = circle_fraction * (Math.PI * 2 *
-                (Math.abs(radius) + signumPos(radius) * (CHASSIS_WIDTH / 2)));
+                (Math.abs(radius) + signumSignedZeros(radius) * (CHASSIS_WIDTH / 2)));
 
         Thread thread = new Thread(new RunToPositionEnabler(speed) {
             @Override
@@ -100,13 +101,15 @@ public class TankChassis implements ITankChassis {
 
             @Override
             public void setMotorPowers(double speed) {
-                // slow down the appropriate wheel by the appropriate fraction in order to
-                if (right_arc_distance > left_arc_distance) {
-                    leftWheel.setSpeedUsingSetPower(speed * left_arc_distance / right_arc_distance);
-                    rightWheel.setSpeedUsingSetPower(speed);
+                // slow down the appropriate wheel by the appropriate fraction in order to meet the
+                // speed requirements.  the spec'd speed is the speed of the outer wheel
+                // Double.compare in order to handle signed zeros
+                if (Double.compare(right_arc_distance, left_arc_distance) > 0) {
+                    leftWheel.setVelocity(speed * left_arc_distance / right_arc_distance, AngleUnit.RADIANS);
+                    rightWheel.setVelocity(speed, AngleUnit.RADIANS);
                 } else {
-                    leftWheel.setSpeedUsingSetPower(speed);
-                    rightWheel.setSpeedUsingSetPower(speed * right_arc_distance / left_arc_distance);
+                    leftWheel.setVelocity(speed, AngleUnit.RADIANS);
+                    rightWheel.setVelocity(speed * right_arc_distance / left_arc_distance, AngleUnit.RADIANS);
                 }
             }
         });
@@ -115,7 +118,6 @@ public class TankChassis implements ITankChassis {
         else
             thread.start();
     }
-
 
     @Override
     public void move(double speed, final double distance, boolean waitForCompletion) {
@@ -139,10 +141,10 @@ public class TankChassis implements ITankChassis {
      * Cuts down on boilerplate code needed to get the motors to run to a target position
      */
     private abstract class RunToPositionEnabler implements Runnable {
-        final double realSpeed;
+        final double rotationalSpeed;
 
         RunToPositionEnabler(final double speed) {
-            realSpeed = Math.abs(speed);
+            rotationalSpeed = Math.abs(speed / WHEEL_RADIUS);
         }
 
         /**
@@ -163,7 +165,7 @@ public class TankChassis implements ITankChassis {
             leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            setMotorPowers(realSpeed);
+            setMotorPowers(rotationalSpeed);
 
             while (leftWheel.isBusy() && rightWheel.isBusy()) {
                 try {
@@ -182,23 +184,22 @@ public class TankChassis implements ITankChassis {
         public void setMotorPowers(double speed) {
             // need to use setPower for some reason
             // normalize the speed in rad/s against the max rad/s speed to get the power on [0,1]
-            leftWheel.setSpeedUsingSetPower(speed);
-            rightWheel.setSpeedUsingSetPower(speed);
+            leftWheel.setVelocity(speed, AngleUnit.RADIANS);
+            rightWheel.setVelocity(speed, AngleUnit.RADIANS);
         }
     }
 
     /**
-     * Signum, but returns 1 if 0 is passed in
+     * Normal signum, except that it returns 1 for positive 0s and -1 for negative zeros
      *
      * @param n the number to take the signum of
-     * @return 1 if n >=0.  0 otherwise
+     * @return 1 if the number is positive or 0d.  -1 if the number is negative or -0d
      */
-    private static double signumPos(double n) {
-        if (Math.signum(n) == 0d) {
+    private static double signumSignedZeros(double n) {
+        if (1 / n > 0)
             return 1d;
-        } else {
-            return Math.signum(n);
-        }
+        else
+            return -1d;
     }
 
     /**
