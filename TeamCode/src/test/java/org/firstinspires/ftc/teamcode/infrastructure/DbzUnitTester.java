@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests.infrastructure;
+package org.firstinspires.ftc.teamcode.infrastructure;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

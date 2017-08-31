@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.extensions.DbzDigitalChannel;
-import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeDigitalChannel;
-import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
+import org.firstinspires.ftc.teamcode.fakehardware.FakeDigitalChannel;
+import org.firstinspires.ftc.teamcode.infrastructure.DbzUnitTester;
 import org.junit.Before;
 import org.mockito.Spy;
 

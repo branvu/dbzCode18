@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.constructs.LimitSwitch;
 import org.firstinspires.ftc.teamcode.extensions.DbzMotor;
-import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeDcMotorEx;
-import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
+import org.firstinspires.ftc.teamcode.fakehardware.FakeDcMotorEx;
+import org.firstinspires.ftc.teamcode.infrastructure.DbzUnitTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

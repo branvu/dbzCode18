@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.constructs.ITankChassis;
 import org.firstinspires.ftc.teamcode.constructs.TankChassis;
 import org.firstinspires.ftc.teamcode.extensions.DbzMotor;
-import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeDcMotorEx;
-import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
+import org.firstinspires.ftc.teamcode.fakehardware.FakeDcMotorEx;
+import org.firstinspires.ftc.teamcode.infrastructure.DbzUnitTester;
 import org.firstinspires.ftc.teamcode.utils.LogDbz;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +36,23 @@ public class TankChassisTest extends DbzUnitTester {
     }
 
     @Test
+    public void testTurn() {
+        double speed = 1;
+        double radius = 1;
+        double radians = 2 * Math.PI;
+        chassis.turn(speed, radius, radians, false);
+        checkTurningVelocities(speed, radius);
+
+        double outerDistance = radians * (radius + (ITankChassis.CHASSIS_WIDTH / 2));
+        // if we are going right
+        if (1 / radius > 0) {
+            assertEquals(outerDistance, 2 * Math.PI * ITankChassis.WHEEL_RADIUS * rightMotorBase.getTargetPosition() / rightMotor.getTicksPerRev());
+            //todo: this fails for some reason
+        }
+
+    }
+
+    @Test
     public void testRealDrive() {
         // check different speeds and radii, positive and negative, on realDrive
         analyzeRealDrive(1, 2);
@@ -57,6 +74,10 @@ public class TankChassisTest extends DbzUnitTester {
         }
         LogDbz.v(TAG, "realDrive at speed " + Double.toString(speed) + "m/s and at radius " + Double.toString(radius) + "m");
         chassis.realDrive(speed, radius);
+        checkTurningVelocities(speed, radius);
+    }
+
+    private void checkTurningVelocities(double speed, double radius) {
         double leftV = ITankChassis.WHEEL_RADIUS * leftMotorBase.getVelocity(null);
         double rightV = ITankChassis.WHEEL_RADIUS * rightMotorBase.getVelocity(null);
         LogDbz.v(TAG, "leftV: " + Double.toString(leftV) + " | rightV: " + Double.toString(rightV));

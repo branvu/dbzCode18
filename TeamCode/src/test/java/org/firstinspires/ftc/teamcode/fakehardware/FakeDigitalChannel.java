@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests.fakehardware;
+package org.firstinspires.ftc.teamcode.fakehardware;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 

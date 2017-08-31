@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -38,7 +39,7 @@ public class DbzHardwareMap {
         }
 
         // Otherwise, go get the DcMotor out of hardwareMap
-        DcMotor base = hardwareMap.dcMotor.get(motor.getName());
+        DcMotor base = hardwareMap.get(DcMotor.class, motor.getName());
 
         // we can only make a DbzMotor if we got an DcMotorEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
@@ -59,10 +60,11 @@ public class DbzHardwareMap {
                 return (DbzServo) createdDevices.get(servo);
         }
 
-        Servo base = hardwareMap.servo.get(servo.getName());
+        Servo base = hardwareMap.get(Servo.class, servo.getName());
 
         // we can only make a DbzServo if we got an ServoEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
+        //todo: this doesn't actually work.  ServoImplEx isn't an instance of ServoEx
         if (base instanceof DbzServo.ServoEx) {
             DbzServo dbzServo = new DbzServo((DbzServo.ServoEx) base);
             createdDevices.put(servo, dbzServo);
@@ -80,7 +82,10 @@ public class DbzHardwareMap {
                 return (DbzDigitalChannel) createdDevices.get(digitalChannel);
         }
 
-        DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel(hardwareMap.digitalChannel.get(digitalChannel.getName()));
+        // this casting is dangerous.  however, it doesn't work if you use .get(DigitalChannel.class, digitalChannel.getName()
+        // not really sure why.  it just don't.  but the example SensorDIO shows it that way
+        // however, that example also has a dim in it, which means this may be an issue with MRI v REV
+        DbzDigitalChannel dbzDigitalChannel = new DbzDigitalChannel((DigitalChannel) hardwareMap.get(digitalChannel.getName()));
         createdDevices.put(digitalChannel, dbzDigitalChannel);
         return dbzDigitalChannel;
     }
@@ -104,7 +109,7 @@ public class DbzHardwareMap {
                 return (DbzColorRangeSensor) createdDevices.get(colorRangeSensor);
         }
 
-        ColorSensor base = hardwareMap.colorSensor.get(colorRangeSensor.getName());
+        ColorSensor base = hardwareMap.get(ColorSensor.class, colorRangeSensor.getName());
 
         if (base instanceof RevColorRangeSensor) {
             DbzColorRangeSensor dbzColorRangeSensor = new DbzColorRangeSensor((RevColorRangeSensor) base);

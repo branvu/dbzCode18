@@ -45,7 +45,7 @@ public abstract class DbzOpMode extends LinearOpMode {
         rightMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.right);
         rightMotor.init(DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
 
-        camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
+        //camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
         limitedMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.limited);
         imu = DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.internalIMU);
 

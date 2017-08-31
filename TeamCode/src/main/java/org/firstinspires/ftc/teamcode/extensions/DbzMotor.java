@@ -280,6 +280,16 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
         return 2 * Math.PI * type.getAchieveableMaxRPMFraction() * type.getMaxRPM() / 60;
     }
 
+    /* */
+    public double getTicksPerRev() {
+        try {
+            return getMotorType().getTicksPerRev();
+        } catch (NullPointerException e) {
+            LogDbz.w(TAG, "If you aren't mocking DcMotorEx, be concerned.");
+            return 1478.4; //the value for Matrix12VMotor
+        }
+    }
+
 
     /* Delegate all other methods to DcMotorEx */
     /**

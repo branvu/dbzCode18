@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests.fakehardware;
+package org.firstinspires.ftc.teamcode.fakehardware;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
@@ -13,7 +13,7 @@ public abstract class FakeDcMotorEx implements DcMotorEx {
     private RunMode runMode = RunMode.RUN_USING_ENCODER;
     private int tolerance = 10;
     private ZeroPowerBehavior zeroPowerBehavior = ZeroPowerBehavior.BRAKE;
-    private int targetPostion = 1000;
+    private int targetPosition = 1000;
     private double velocity = 0;
     private MotorConfigurationType motorConfigurationType;
 
@@ -69,12 +69,12 @@ public abstract class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public void setTargetPosition(int position) {
-        this.targetPostion = position;
+        this.targetPosition = position;
     }
 
     @Override
     public int getTargetPosition() {
-        return targetPostion;
+        return targetPosition;
     }
 
     @Override

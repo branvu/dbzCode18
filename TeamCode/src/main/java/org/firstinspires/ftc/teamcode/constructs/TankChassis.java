@@ -90,11 +90,12 @@ public class TankChassis implements ITankChassis {
             @Override
             public void setMotorTargetPositions() {
                 // the number of ticks we need spin on the left wheel in order to go that distance
-                double leftTicks = leftWheel.getMotorType().getTicksPerRev() * left_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
+                double leftTicks = leftWheel.getTicksPerRev() * left_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
                 // the right wheel is the same as the left, but it gets negative
                 // if radians was positive, we need to spin right.  this means that right wheel should
                 // reverse while left goes forward.  if radians was negative, we have the reverse effect
-                double rightTicks = -rightWheel.getMotorType().getTicksPerRev() * right_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
+                double rightTicks = -rightWheel.getTicksPerRev() * right_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
+                LogDbz.v(TAG, Integer.toString(leftWheel.getCurrentPosition() + (int) Math.round(rightTicks)));
                 leftWheel.setTargetPosition(leftWheel.getCurrentPosition() + (int) Math.round(leftTicks));
                 rightWheel.setTargetPosition(rightWheel.getCurrentPosition() + (int) Math.round(rightTicks));
             }
@@ -195,7 +196,7 @@ public class TankChassis implements ITankChassis {
      * @param n the number to take the signum of
      * @return 1 if the number is positive or 0d.  -1 if the number is negative or -0d
      */
-    private static double signumSignedZeros(double n) {
+    public static double signumSignedZeros(double n) {
         if (1 / n > 0)
             return 1d;
         else

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.extensions.DbzServo;
-import org.firstinspires.ftc.teamcode.tests.fakehardware.FakeServoEx;
-import org.firstinspires.ftc.teamcode.tests.infrastructure.DbzUnitTester;
+import org.firstinspires.ftc.teamcode.fakehardware.FakeServoEx;
+import org.firstinspires.ftc.teamcode.infrastructure.DbzUnitTester;
 import org.junit.Before;
 import org.mockito.Spy;
 
