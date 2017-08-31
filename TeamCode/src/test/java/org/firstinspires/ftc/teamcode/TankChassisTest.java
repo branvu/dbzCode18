@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.configuration.MotorConfigurationType;
+
 import org.firstinspires.ftc.teamcode.constructs.ITankChassis;
 import org.firstinspires.ftc.teamcode.constructs.TankChassis;
 import org.firstinspires.ftc.teamcode.extensions.DbzMotor;
@@ -8,9 +10,11 @@ import org.firstinspires.ftc.teamcode.infrastructure.DbzUnitTester;
 import org.firstinspires.ftc.teamcode.utils.LogDbz;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Spy;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -25,11 +29,19 @@ public class TankChassisTest extends DbzUnitTester {
     @Spy
     FakeDcMotorEx rightMotorBase;
 
+    @Mock
+    MotorConfigurationType motorConfigurationType;
+
     private ITankChassis chassis;
     private DbzMotor leftMotor, rightMotor;
 
     @Before
     public void initChassis() {
+        when(motorConfigurationType.getTicksPerRev())
+                .thenReturn(1478.4);
+        leftMotorBase.setMotorType(motorConfigurationType);
+        rightMotorBase.setMotorType(motorConfigurationType);
+
         this.leftMotor = new DbzMotor(leftMotorBase);
         this.rightMotor = new DbzMotor(rightMotorBase);
         this.chassis = new TankChassis(leftMotor, rightMotor);
@@ -41,6 +53,7 @@ public class TankChassisTest extends DbzUnitTester {
         double radius = 1;
         double radians = 2 * Math.PI;
         chassis.turn(speed, radius, radians, false);
+        sleep(100);
         checkTurningVelocities(speed, radius);
 
         double outerDistance = radians * (radius + (ITankChassis.CHASSIS_WIDTH / 2));

@@ -113,11 +113,5 @@ public class DbzMotorTest extends DbzUnitTester {
         motor.cancelBreakOnLimit();
     }
 
-    private static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

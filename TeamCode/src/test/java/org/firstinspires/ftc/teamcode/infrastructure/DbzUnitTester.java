@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.infrastructure;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * A base class for all of our unit tests to extend
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public abstract class DbzUnitTester extends GetterSetterTester {
     final private static String TAG = DbzUnitTester.class.getName();
 
@@ -17,4 +16,12 @@ public abstract class DbzUnitTester extends GetterSetterTester {
      */
     @Test
     public abstract void testGettersSetters();
+
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

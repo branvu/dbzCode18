@@ -91,11 +91,7 @@ public class TankChassis implements ITankChassis {
             public void setMotorTargetPositions() {
                 // the number of ticks we need spin on the left wheel in order to go that distance
                 double leftTicks = leftWheel.getTicksPerRev() * left_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
-                // the right wheel is the same as the left, but it gets negative
-                // if radians was positive, we need to spin right.  this means that right wheel should
-                // reverse while left goes forward.  if radians was negative, we have the reverse effect
-                double rightTicks = -rightWheel.getTicksPerRev() * right_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
-                LogDbz.v(TAG, Integer.toString(leftWheel.getCurrentPosition() + (int) Math.round(rightTicks)));
+                double rightTicks = rightWheel.getTicksPerRev() * right_arc_distance / (2 * Math.PI * WHEEL_RADIUS);
                 leftWheel.setTargetPosition(leftWheel.getCurrentPosition() + (int) Math.round(leftTicks));
                 rightWheel.setTargetPosition(rightWheel.getCurrentPosition() + (int) Math.round(rightTicks));
             }

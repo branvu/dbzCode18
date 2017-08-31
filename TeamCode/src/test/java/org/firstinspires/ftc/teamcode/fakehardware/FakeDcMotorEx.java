@@ -84,7 +84,7 @@ public abstract class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public double getVelocity(AngleUnit unit) {
-        return velocity;
+        return this.velocity;
     }
 
     @Override

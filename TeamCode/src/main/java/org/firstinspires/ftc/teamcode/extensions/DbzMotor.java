@@ -282,12 +282,7 @@ public class DbzMotor implements DcMotorEx, DbzDevice {
 
     /* */
     public double getTicksPerRev() {
-        try {
-            return getMotorType().getTicksPerRev();
-        } catch (NullPointerException e) {
-            LogDbz.w(TAG, "If you aren't mocking DcMotorEx, be concerned.");
-            return 1478.4; //the value for Matrix12VMotor
-        }
+        return getMotorType().getTicksPerRev();
     }
 
 

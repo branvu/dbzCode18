@@ -18,6 +18,13 @@ public class LogDbz {
             System.out.println(TAG + "/v: " + msg);
     }
 
+    public static void vo(String TAG, String label, Object object) {
+        if (useAndroid)
+            Log.v(TAG, label + ": " + object.toString());
+        else
+            System.out.println(TAG + "/v: " + label + ": " + object.toString());
+    }
+
     public static void w(String TAG, String msg) {
         if (useAndroid)
             Log.w(TAG, msg);
