@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.extensions;
 
+import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -8,10 +13,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Created by Matthew on 8/28/2017.
  */
 
-public class DbzColorRangeSensor implements DbzDevice, RevColorRangeSensor {
-    private RevColorRangeSensor sensor;
+public class DbzColorRangeSensor implements DbzDevice, DistanceSensor, OpticalDistanceSensor, LightSensor, ColorSensor {
+    private LynxI2cColorRangeSensor sensor;
 
-    public DbzColorRangeSensor(RevColorRangeSensor sensor) {
+    public DbzColorRangeSensor(LynxI2cColorRangeSensor sensor) {
         this.sensor = sensor;
     }
 

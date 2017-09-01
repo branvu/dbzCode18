@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.extensions;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 /**
  * Created by Matthew on 8/26/2017.
@@ -11,12 +12,10 @@ import com.qualcomm.robotcore.hardware.ServoController;
 public class DbzServo implements Servo, PwmControl, DbzDevice {
     final private static String TAG = DbzServo.class.getName();
 
-    public interface ServoEx extends Servo, PwmControl {
-    }
 
-    private final ServoEx servoEx;
+    private final ServoImplEx servoEx;
 
-    public DbzServo(ServoEx servo) {
+    public DbzServo(ServoImplEx servo) {
         servoEx = servo;
     }
 

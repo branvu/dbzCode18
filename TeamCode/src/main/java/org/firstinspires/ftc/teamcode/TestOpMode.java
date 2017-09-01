@@ -21,6 +21,8 @@ public class TestOpMode extends DbzOpMode {
         leftMotor.setVelocity(1, AngleUnit.RADIANS);
         rightMotor.setVelocity(-1, AngleUnit.RADIANS);
         telemetry.addData("imu x rotation", imu.getAngularVelocity().xRotationRate);
+        telemetry.addData("blue", sensor.blue());
+
 
     }
 

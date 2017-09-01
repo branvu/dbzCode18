@@ -25,9 +25,9 @@ The prefix of the name will be one of the following:
 
 * Template: This is a minimally functional OpMode used to illustrate the skeleton/structure
             of a particular style of OpMode.  These are bare bones examples.
-* Sensor:   This is a Sample OpMode that shows how to use a specific sensor.
+* Sensor:   This is a Sample OpMode that shows how to use a specific colorSensor.
             It is not intended as a functioning robot, it is simply showing the minimal code
-            required to read and display the sensor values.
+            required to read and display the colorSensor values.
 * Hardware: This is not an actual OpMode, but a helper class that is used to describe
             one particular robot's hardware devices: eg: for a Pushbot.  Look at any
             Pushbot sample to see how this can be used in an OpMode.

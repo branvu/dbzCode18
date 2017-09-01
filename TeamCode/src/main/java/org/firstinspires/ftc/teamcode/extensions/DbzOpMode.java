@@ -34,6 +34,7 @@ public abstract class DbzOpMode extends LinearOpMode {
     protected LimitSwitch limiter1, limiter2;
     protected ITankChassis tankChassis;
     protected DbzIMU imu;
+    protected DbzColorRangeSensor sensor;
 
 
     @Override
@@ -45,9 +46,10 @@ public abstract class DbzOpMode extends LinearOpMode {
         rightMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.right);
         rightMotor.init(DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
 
-        //camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
+        camServo = DbzHardwareMap.getDbzServo(DbzHardwareMap.DbzServoNames.cam);
         limitedMotor = DbzHardwareMap.getDbzMotor(DbzHardwareMap.DbzMotorNames.limited);
         imu = DbzHardwareMap.getDbzIMU(DbzHardwareMap.DbzIMUNames.internalIMU);
+        sensor = DbzHardwareMap.getDbzColorRangeSensor(DbzHardwareMap.DbzColorRangeSensorNames.sensor);
 
         /* Initialize constructs here */
         limiter1 = new LimitSwitch(DbzHardwareMap.getDbzDigitalChannel(DbzHardwareMap.DbzDigitalChannelNames.limiter1));

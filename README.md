@@ -65,14 +65,14 @@ Version 3.00 (built on 17.04.13)
 
 This software is being released as an "alpha" version.  Use this version at your own risk!
 
-This pre-release software contains SIGNIFICANT changes, including changes to the Wi-Fi Direct pairing mechanism, rewrites of the I2C sensor classes, changes to the USB/FTDI layer, and the introduction of support for the REV Robotics Expansion Hub and the REV Robotics color-range-light sensor.  These changes were implemented to improve the reliability and resiliency of the FTC control system.
+This pre-release software contains SIGNIFICANT changes, including changes to the Wi-Fi Direct pairing mechanism, rewrites of the I2C colorSensor classes, changes to the USB/FTDI layer, and the introduction of support for the REV Robotics Expansion Hub and the REV Robotics color-range-light colorSensor.  These changes were implemented to improve the reliability and resiliency of the FTC control system.
 
 Please note, however, that version 3.00 is considered "alpha" code.  This code is being released so that the FIRST community will have an opportunity to test the new REV Expansion Hub electronics module when it becomes available in May.  The developers do not recommend using this code for critical applications (i.e., competition use).
 
 *** Use this version of the software at YOUR OWN RISK!!! ***
 
 Changes include:
- * Major rework of sensor-related infrastructure.  Includes rewriting sensor classes to implement synchronous I2C communication.
+ * Major rework of colorSensor-related infrastructure.  Includes rewriting colorSensor classes to implement synchronous I2C communication.
  * Fix to reset Autonomous timer back to 30 seconds.
  * Implementation of specific motor profiles for approved 12V motors (includes Tetrix, AndyMark, Matrix and REV models).
  * Modest improvements to enhance Wi-Fi P2P pairing.
@@ -87,12 +87,12 @@ Changes include:
     - Fixes bug with projects page for Firefox browser.
     - Added IsSpeaking block to AndroidTextToSpeech.  
  * Implements support for the REV Robotics Expansion Hub
-    - Implements support for integral REV IMU (physically installed on I2C bus 0, uses same Bosch BNO055 9 axis absolute orientation sensor as Adafruit 9DOF abs orientation sensor).
-    - Implements support for REV color/range/light sensor.
+    - Implements support for integral REV IMU (physically installed on I2C bus 0, uses same Bosch BNO055 9 axis absolute orientation colorSensor as Adafruit 9DOF abs orientation colorSensor).
+    - Implements support for REV color/range/light colorSensor.
     - Provides support to update Expansion Hub firmware through FTC SDK.
     - Detects REV firmware version and records in log file.
     - Includes support for REV Control Hub (note that the REV Control Hub is not yet approved for FTC use).
-    - Implements FTC Blocks programming support for REV Expansion Hub and sensor hardware.
+    - Implements FTC Blocks programming support for REV Expansion Hub and colorSensor hardware.
     - Detects and alerts when I2C device disconnect.
     
 **************************************************************************************
@@ -111,7 +111,7 @@ Version 2.61 (released on 16.12.19)
 
 Version 2.6 (released on 16.12.16)
   * Fixes for Gyro class:
-     - Improve (decrease) sensor refresh latency.
+     - Improve (decrease) colorSensor refresh latency.
      - fix isCalibrating issues.
   * Blocks Programming mode changes:
      - Blocks now ignores a device in the configuration xml if the name is empty. Other devices work in configuration work fine.
@@ -261,11 +261,11 @@ Version 2.10 (released on 16.09.03)
     - support for android.graphics.Color.
     - added support for ElapsedTime.
     - improved look and legibility of blocks.
-    - support for compass sensor.
-    - support for ultrasonic sensor.
+    - support for compass colorSensor.
+    - support for ultrasonic colorSensor.
     - support for IrSeeker.
     - support for LED.
-    - support for color sensor.
+    - support for color colorSensor.
     - support for CRServo
     - prompt user to configure robot before using programming mode.
  * Provides ability to disable audio cues.
@@ -279,7 +279,7 @@ Version 2.00 (released on 16.08.19)
  * Users can now use annotations to register/disable their Op Modes.
  * Changes in the Android SDK, JDK and build tool requirements (minsdk=19, java 1.7, build tools 23.0.3).
  * Standardized units in analog input.
- * Cleaned up code for existing analog sensor classes.
+ * Cleaned up code for existing analog colorSensor classes.
  * setChannelMode and getChannelMode were REMOVED from the DcMotorController class.  This is important - we no longer set the motor modes through the motor controller.
  * setMode and getMode were added to the DcMotor class.  
  * ContinuousRotationServo class has been added to the FTC SDK.
@@ -363,7 +363,7 @@ Release 16.02.09
     - If a disconnected module gets physically reconnected the RC will auto detect the module and the user will regain control of the recently connected module.
     - Warning messages are more helpful (identifies the type of module that’s missing plus its USB serial number).   
  * Code changes to fix the null gamepad reference when users try to reference the gamepads in the init() portion of their op mode.
- * NXT light sensor output is now properly scaled.  Note that teams might have to readjust their light threshold values in their op modes.
+ * NXT light colorSensor output is now properly scaled.  Note that teams might have to readjust their light threshold values in their op modes.
  * On DS user interface, gamepad icon for a driver will disappear if the matching gamepad is disconnected or if that gamepad gets designated as a different driver.
  * Robot Protocol (ROBOCOL) version number info is displayed in About screen on RC and DS apps.
  * Incorporated a display filter on pairing screen to filter out devices that don’t use the “<TEAM NUMBER>-“ format. This filter can be turned off to show all WiFi Direct devices.
@@ -434,8 +434,8 @@ Release 15.11.04.001
  * Fixed race condition in EventLoopManager.
  * Fix to keep references stable when updating gamepad.
  * For legacy Matrix motor/servo controllers removed necessity of appending "Motor" and "Servo" to controller names.
- * Updated HT color sensor driver to use constants from ModernRoboticsUsbLegacyModule class.
- * Updated MR color sensor driver to use constants from ModernRoboticsUsbDeviceInterfaceModule class. 
+ * Updated HT color colorSensor driver to use constants from ModernRoboticsUsbLegacyModule class.
+ * Updated MR color colorSensor driver to use constants from ModernRoboticsUsbDeviceInterfaceModule class.
  * Correctly handle I2C Address change in all color sensors
  * Updated/cleaned up op modes.
   - Updated comments in LinearI2cAddressChange.java example op mode.
@@ -443,7 +443,7 @@ Release 15.11.04.001
   - Removed K9AutoTime.java op mode.
   - Added MRGyroTest.java op mode (demonstrates how to use MR Gyro Sensor).
   - Added MRRGBExample.java op mode (demonstrates how to use MR Color Sensor).
-  - Added HTRGBExample.java op mode (demonstrates how to use HT legacy color sensor).
+  - Added HTRGBExample.java op mode (demonstrates how to use HT legacy color colorSensor).
   - Added MatrixControllerDemo.java (demonstrates how to use legacy Matrix controller).
  * Updated javadoc documentation.
  * Updated release .apk files for Robot Controller and Driver Station apps.
@@ -458,7 +458,7 @@ Release 15.10.06.002
  * Added support for Legacy Matrix 9.6V motor/servo controller.
  * Cleaned up build.gradle file.
  * Minor UI and bug fixes for driver station and robot controller apps.
- * Throws error if Ultrasonic sensor (NXT) is not configured for legacy module port 4 or 5.
+ * Throws error if Ultrasonic colorSensor (NXT) is not configured for legacy module port 4 or 5.
 
 T. Eng
 October 6, 2015

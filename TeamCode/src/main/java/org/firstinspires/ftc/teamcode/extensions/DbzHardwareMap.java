@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.extensions;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import java.util.HashMap;
 
@@ -64,9 +66,8 @@ public class DbzHardwareMap {
 
         // we can only make a DbzServo if we got an ServoEx from hardwareMap
         // if we got one, then put it in createdDevices and return it.  otherwise be angry.
-        //todo: this doesn't actually work.  ServoImplEx isn't an instance of ServoEx
-        if (base instanceof DbzServo.ServoEx) {
-            DbzServo dbzServo = new DbzServo((DbzServo.ServoEx) base);
+        if (base instanceof ServoImplEx) {
+            DbzServo dbzServo = new DbzServo((ServoImplEx) base);
             createdDevices.put(servo, dbzServo);
             return dbzServo;
         } else {
@@ -111,8 +112,8 @@ public class DbzHardwareMap {
 
         ColorSensor base = hardwareMap.get(ColorSensor.class, colorRangeSensor.getName());
 
-        if (base instanceof RevColorRangeSensor) {
-            DbzColorRangeSensor dbzColorRangeSensor = new DbzColorRangeSensor((RevColorRangeSensor) base);
+        if (base instanceof LynxI2cColorRangeSensor) {
+            DbzColorRangeSensor dbzColorRangeSensor = new DbzColorRangeSensor((LynxI2cColorRangeSensor) base);
             createdDevices.put(colorRangeSensor, dbzColorRangeSensor);
             return dbzColorRangeSensor;
         } else {
@@ -186,7 +187,7 @@ public class DbzHardwareMap {
     }
 
     public enum DbzColorRangeSensorNames implements DbzDeviceNames {
-        sensor("limit1");
+        sensor("color");
 
         private String name;
 
